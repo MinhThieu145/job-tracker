@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Company {
+  id           String        @id @default(cuid())
+  name         String
+  applications Application[]
+  createdAt    DateTime      @default(now())
+}
+
+model ResumeVersion {
+  id           String        @id @default(cuid())
+  label        String
+  notes        String?
+  applications Application[]
+  createdAt    DateTime      @default(now())
+}
+
+model Application {
+  id             String        @id @default(cuid())
+  company        Company       @relation(fields: [companyId], references: [id])
+  companyId      String
+  resume         ResumeVersion @relation(fields: [resumeId], references: [id])
+  resumeId       String
+  roleTitle      String
+  jobDescription String        @db.Text
+  postingUrl     String?
+  emailUsed      String
+  appliedDate    DateTime      @default(now())
+  status         Status        @default(APPLIED)
+  notes          String?       @db.Text
+  createdAt      DateTime      @default(now())
+}
+
+enum Status {
+  APPLIED
+  PHONE_SCREEN
+  INTERVIEW
+  OFFER
+  REJECTED
+  GHOSTED
+}
