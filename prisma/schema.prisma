@@ -9,7 +9,7 @@ datasource db {
 
 model Company {
   id           String        @id @default(cuid())
-  name         String
+  name         String        @unique
   applications Application[]
   createdAt    DateTime      @default(now())
 }
