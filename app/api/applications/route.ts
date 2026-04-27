@@ -34,3 +34,23 @@ export async function POST(req: Request) {
         return new Response(JSON.stringify({ error: "Failed to handle POST request" }), { status: 500 });
     }
 }
+
+
+export async function GET(req: Request) {
+    try {
+        const applications = await prisma.application.findMany({
+            orderBy: {
+                createdAt: "desc",
+            },
+            include: {
+                company: true,
+                resume: true,
+            }
+        });
+
+        return new Response(JSON.stringify(applications), { status: 200 });
+    } catch (error) {
+        console.error("Error fetching applications:", error);
+        return new Response(JSON.stringify({ error: "Failed to fetch applications" }), { status: 500 });
+    }
+}
