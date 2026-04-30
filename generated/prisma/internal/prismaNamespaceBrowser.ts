@@ -85,6 +85,8 @@ export const ResumeVersionScalarFieldEnum = {
   id: 'id',
   label: 'label',
   notes: 'notes',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
   createdAt: 'createdAt'
 } as const
 

@@ -28,6 +28,8 @@ export type ResumeVersionMinAggregateOutputType = {
   id: string | null
   label: string | null
   notes: string | null
+  fileUrl: string | null
+  fileName: string | null
   createdAt: Date | null
 }
 
@@ -35,6 +37,8 @@ export type ResumeVersionMaxAggregateOutputType = {
   id: string | null
   label: string | null
   notes: string | null
+  fileUrl: string | null
+  fileName: string | null
   createdAt: Date | null
 }
 
@@ -42,6 +46,8 @@ export type ResumeVersionCountAggregateOutputType = {
   id: number
   label: number
   notes: number
+  fileUrl: number
+  fileName: number
   createdAt: number
   _all: number
 }
@@ -51,6 +57,8 @@ export type ResumeVersionMinAggregateInputType = {
   id?: true
   label?: true
   notes?: true
+  fileUrl?: true
+  fileName?: true
   createdAt?: true
 }
 
@@ -58,6 +66,8 @@ export type ResumeVersionMaxAggregateInputType = {
   id?: true
   label?: true
   notes?: true
+  fileUrl?: true
+  fileName?: true
   createdAt?: true
 }
 
@@ -65,6 +75,8 @@ export type ResumeVersionCountAggregateInputType = {
   id?: true
   label?: true
   notes?: true
+  fileUrl?: true
+  fileName?: true
   createdAt?: true
   _all?: true
 }
@@ -145,6 +157,8 @@ export type ResumeVersionGroupByOutputType = {
   id: string
   label: string
   notes: string | null
+  fileUrl: string | null
+  fileName: string | null
   createdAt: Date
   _count: ResumeVersionCountAggregateOutputType | null
   _min: ResumeVersionMinAggregateOutputType | null
@@ -173,6 +187,8 @@ export type ResumeVersionWhereInput = {
   id?: Prisma.StringFilter<"ResumeVersion"> | string
   label?: Prisma.StringFilter<"ResumeVersion"> | string
   notes?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
+  fileUrl?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
+  fileName?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ResumeVersion"> | Date | string
   applications?: Prisma.ApplicationListRelationFilter
 }
@@ -181,6 +197,8 @@ export type ResumeVersionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   label?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileName?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   applications?: Prisma.ApplicationOrderByRelationAggregateInput
 }
@@ -192,6 +210,8 @@ export type ResumeVersionWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ResumeVersionWhereInput | Prisma.ResumeVersionWhereInput[]
   label?: Prisma.StringFilter<"ResumeVersion"> | string
   notes?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
+  fileUrl?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
+  fileName?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ResumeVersion"> | Date | string
   applications?: Prisma.ApplicationListRelationFilter
 }, "id">
@@ -200,6 +220,8 @@ export type ResumeVersionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   label?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileName?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ResumeVersionCountOrderByAggregateInput
   _max?: Prisma.ResumeVersionMaxOrderByAggregateInput
@@ -213,6 +235,8 @@ export type ResumeVersionScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ResumeVersion"> | string
   label?: Prisma.StringWithAggregatesFilter<"ResumeVersion"> | string
   notes?: Prisma.StringNullableWithAggregatesFilter<"ResumeVersion"> | string | null
+  fileUrl?: Prisma.StringNullableWithAggregatesFilter<"ResumeVersion"> | string | null
+  fileName?: Prisma.StringNullableWithAggregatesFilter<"ResumeVersion"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ResumeVersion"> | Date | string
 }
 
@@ -220,6 +244,8 @@ export type ResumeVersionCreateInput = {
   id?: string
   label: string
   notes?: string | null
+  fileUrl?: string | null
+  fileName?: string | null
   createdAt?: Date | string
   applications?: Prisma.ApplicationCreateNestedManyWithoutResumeInput
 }
@@ -228,6 +254,8 @@ export type ResumeVersionUncheckedCreateInput = {
   id?: string
   label: string
   notes?: string | null
+  fileUrl?: string | null
+  fileName?: string | null
   createdAt?: Date | string
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutResumeInput
 }
@@ -236,6 +264,8 @@ export type ResumeVersionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.ApplicationUpdateManyWithoutResumeNestedInput
 }
@@ -244,6 +274,8 @@ export type ResumeVersionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutResumeNestedInput
 }
@@ -252,6 +284,8 @@ export type ResumeVersionCreateManyInput = {
   id?: string
   label: string
   notes?: string | null
+  fileUrl?: string | null
+  fileName?: string | null
   createdAt?: Date | string
 }
 
@@ -259,6 +293,8 @@ export type ResumeVersionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -266,6 +302,8 @@ export type ResumeVersionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -273,6 +311,8 @@ export type ResumeVersionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   label?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  fileUrl?: Prisma.SortOrder
+  fileName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -280,6 +320,8 @@ export type ResumeVersionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   label?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  fileUrl?: Prisma.SortOrder
+  fileName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -287,6 +329,8 @@ export type ResumeVersionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   label?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  fileUrl?: Prisma.SortOrder
+  fileName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -317,6 +361,8 @@ export type ResumeVersionCreateWithoutApplicationsInput = {
   id?: string
   label: string
   notes?: string | null
+  fileUrl?: string | null
+  fileName?: string | null
   createdAt?: Date | string
 }
 
@@ -324,6 +370,8 @@ export type ResumeVersionUncheckedCreateWithoutApplicationsInput = {
   id?: string
   label: string
   notes?: string | null
+  fileUrl?: string | null
+  fileName?: string | null
   createdAt?: Date | string
 }
 
@@ -347,6 +395,8 @@ export type ResumeVersionUpdateWithoutApplicationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -354,6 +404,8 @@ export type ResumeVersionUncheckedUpdateWithoutApplicationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -392,6 +444,8 @@ export type ResumeVersionSelect<ExtArgs extends runtime.Types.Extensions.Interna
   id?: boolean
   label?: boolean
   notes?: boolean
+  fileUrl?: boolean
+  fileName?: boolean
   createdAt?: boolean
   applications?: boolean | Prisma.ResumeVersion$applicationsArgs<ExtArgs>
   _count?: boolean | Prisma.ResumeVersionCountOutputTypeDefaultArgs<ExtArgs>
@@ -401,6 +455,8 @@ export type ResumeVersionSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   label?: boolean
   notes?: boolean
+  fileUrl?: boolean
+  fileName?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["resumeVersion"]>
 
@@ -408,6 +464,8 @@ export type ResumeVersionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   label?: boolean
   notes?: boolean
+  fileUrl?: boolean
+  fileName?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["resumeVersion"]>
 
@@ -415,10 +473,12 @@ export type ResumeVersionSelectScalar = {
   id?: boolean
   label?: boolean
   notes?: boolean
+  fileUrl?: boolean
+  fileName?: boolean
   createdAt?: boolean
 }
 
-export type ResumeVersionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "label" | "notes" | "createdAt", ExtArgs["result"]["resumeVersion"]>
+export type ResumeVersionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "label" | "notes" | "fileUrl" | "fileName" | "createdAt", ExtArgs["result"]["resumeVersion"]>
 export type ResumeVersionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applications?: boolean | Prisma.ResumeVersion$applicationsArgs<ExtArgs>
   _count?: boolean | Prisma.ResumeVersionCountOutputTypeDefaultArgs<ExtArgs>
@@ -435,6 +495,8 @@ export type $ResumeVersionPayload<ExtArgs extends runtime.Types.Extensions.Inter
     id: string
     label: string
     notes: string | null
+    fileUrl: string | null
+    fileName: string | null
     createdAt: Date
   }, ExtArgs["result"]["resumeVersion"]>
   composites: {}
@@ -863,6 +925,8 @@ export interface ResumeVersionFieldRefs {
   readonly id: Prisma.FieldRef<"ResumeVersion", 'String'>
   readonly label: Prisma.FieldRef<"ResumeVersion", 'String'>
   readonly notes: Prisma.FieldRef<"ResumeVersion", 'String'>
+  readonly fileUrl: Prisma.FieldRef<"ResumeVersion", 'String'>
+  readonly fileName: Prisma.FieldRef<"ResumeVersion", 'String'>
   readonly createdAt: Prisma.FieldRef<"ResumeVersion", 'DateTime'>
 }
     

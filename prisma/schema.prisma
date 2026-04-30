@@ -18,6 +18,8 @@ model ResumeVersion {
   id           String        @id @default(cuid())
   label        String
   notes        String?
+  fileUrl      String?
+  fileName     String?
   applications Application[]
   createdAt    DateTime      @default(now())
 }
