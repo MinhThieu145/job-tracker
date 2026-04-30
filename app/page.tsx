@@ -4,7 +4,7 @@
 import Link from "next/link"
 
 import { useEffect, useState } from "react";
-import { columns, Application } from "./dashboard/columns"
+import { columns, Application } from "./dashboard/applicationColumns"
 import { DataTable } from "@/components/data-table";
 
 
