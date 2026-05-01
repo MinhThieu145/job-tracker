@@ -32,3 +32,8 @@ export type ResumeVersion = Prisma.ResumeVersionModel
  * 
  */
 export type Application = Prisma.ApplicationModel
+/**
+ * Model ResumeLineage
+ * 
+ */
+export type ResumeLineage = Prisma.ResumeLineageModel

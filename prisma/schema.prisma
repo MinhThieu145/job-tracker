@@ -15,13 +15,17 @@ model Company {
 }
 
 model ResumeVersion {
-  id           String        @id @default(cuid())
-  label        String
-  notes        String?
-  fileUrl      String?
-  fileName     String?
-  applications Application[]
-  createdAt    DateTime      @default(now())
+  id             String          @id @default(cuid())
+  label          String
+  notes          String?
+  fileUrl        String?
+  fileName       String?
+  isGolden       Boolean         @default(false)
+  structuredData Json?
+  applications   Application[]
+  parents        ResumeLineage[] @relation("Child")
+  children       ResumeLineage[] @relation("Parent")
+  createdAt      DateTime        @default(now())
 }
 
 model Application {
@@ -38,6 +42,24 @@ model Application {
   status         Status        @default(APPLIED)
   notes          String?       @db.Text
   createdAt      DateTime      @default(now())
+}
+
+model ResumeLineage {
+  resumeId       String
+  parentResumeId String
+  relationType   RelationType
+  notes          String?       @db.Text
+  createdAt      DateTime      @default(now())
+  resume         ResumeVersion @relation("Child", fields: [resumeId], references: [id])
+  parent         ResumeVersion @relation("Parent", fields: [parentResumeId], references: [id])
+
+  @@id([resumeId, parentResumeId])
+}
+
+enum RelationType {
+  BASED_ON
+  BORROWED_BULLET
+  MERGED_FROM
 }
 
 enum Status {

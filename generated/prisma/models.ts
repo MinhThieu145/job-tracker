@@ -11,4 +11,5 @@
 export type * from './models/Company'
 export type * from './models/ResumeVersion'
 export type * from './models/Application'
+export type * from './models/ResumeLineage'
 export type * from './commonInputTypes'

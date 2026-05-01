@@ -386,7 +386,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   Company: 'Company',
   ResumeVersion: 'ResumeVersion',
-  Application: 'Application'
+  Application: 'Application',
+  ResumeLineage: 'ResumeLineage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -402,7 +403,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "company" | "resumeVersion" | "application"
+    modelProps: "company" | "resumeVersion" | "application" | "resumeLineage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -628,6 +629,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ResumeLineage: {
+      payload: Prisma.$ResumeLineagePayload<ExtArgs>
+      fields: Prisma.ResumeLineageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ResumeLineageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeLineagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ResumeLineageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeLineagePayload>
+        }
+        findFirst: {
+          args: Prisma.ResumeLineageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeLineagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ResumeLineageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeLineagePayload>
+        }
+        findMany: {
+          args: Prisma.ResumeLineageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeLineagePayload>[]
+        }
+        create: {
+          args: Prisma.ResumeLineageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeLineagePayload>
+        }
+        createMany: {
+          args: Prisma.ResumeLineageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ResumeLineageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeLineagePayload>[]
+        }
+        delete: {
+          args: Prisma.ResumeLineageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeLineagePayload>
+        }
+        update: {
+          args: Prisma.ResumeLineageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeLineagePayload>
+        }
+        deleteMany: {
+          args: Prisma.ResumeLineageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ResumeLineageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ResumeLineageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeLineagePayload>[]
+        }
+        upsert: {
+          args: Prisma.ResumeLineageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeLineagePayload>
+        }
+        aggregate: {
+          args: Prisma.ResumeLineageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateResumeLineage>
+        }
+        groupBy: {
+          args: Prisma.ResumeLineageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResumeLineageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ResumeLineageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResumeLineageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -682,6 +757,8 @@ export const ResumeVersionScalarFieldEnum = {
   notes: 'notes',
   fileUrl: 'fileUrl',
   fileName: 'fileName',
+  isGolden: 'isGolden',
+  structuredData: 'structuredData',
   createdAt: 'createdAt'
 } as const
 
@@ -705,6 +782,17 @@ export const ApplicationScalarFieldEnum = {
 export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]
 
 
+export const ResumeLineageScalarFieldEnum = {
+  resumeId: 'resumeId',
+  parentResumeId: 'parentResumeId',
+  relationType: 'relationType',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type ResumeLineageScalarFieldEnum = (typeof ResumeLineageScalarFieldEnum)[keyof typeof ResumeLineageScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -713,12 +801,29 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 export const NullsOrder = {
@@ -764,6 +869,27 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'Status'
  */
 export type EnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Status'>
@@ -774,6 +900,20 @@ export type EnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
  * Reference to a field of type 'Status[]'
  */
 export type ListEnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Status[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RelationType'
+ */
+export type EnumRelationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RelationType'>
+    
+
+
+/**
+ * Reference to a field of type 'RelationType[]'
+ */
+export type ListEnumRelationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RelationType[]'>
     
 
 
@@ -903,6 +1043,7 @@ export type GlobalOmitConfig = {
   company?: Prisma.CompanyOmit
   resumeVersion?: Prisma.ResumeVersionOmit
   application?: Prisma.ApplicationOmit
+  resumeLineage?: Prisma.ResumeLineageOmit
 }
 
 /* Types for Logging */

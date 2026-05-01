@@ -30,6 +30,7 @@ export type ResumeVersionMinAggregateOutputType = {
   notes: string | null
   fileUrl: string | null
   fileName: string | null
+  isGolden: boolean | null
   createdAt: Date | null
 }
 
@@ -39,6 +40,7 @@ export type ResumeVersionMaxAggregateOutputType = {
   notes: string | null
   fileUrl: string | null
   fileName: string | null
+  isGolden: boolean | null
   createdAt: Date | null
 }
 
@@ -48,6 +50,8 @@ export type ResumeVersionCountAggregateOutputType = {
   notes: number
   fileUrl: number
   fileName: number
+  isGolden: number
+  structuredData: number
   createdAt: number
   _all: number
 }
@@ -59,6 +63,7 @@ export type ResumeVersionMinAggregateInputType = {
   notes?: true
   fileUrl?: true
   fileName?: true
+  isGolden?: true
   createdAt?: true
 }
 
@@ -68,6 +73,7 @@ export type ResumeVersionMaxAggregateInputType = {
   notes?: true
   fileUrl?: true
   fileName?: true
+  isGolden?: true
   createdAt?: true
 }
 
@@ -77,6 +83,8 @@ export type ResumeVersionCountAggregateInputType = {
   notes?: true
   fileUrl?: true
   fileName?: true
+  isGolden?: true
+  structuredData?: true
   createdAt?: true
   _all?: true
 }
@@ -159,6 +167,8 @@ export type ResumeVersionGroupByOutputType = {
   notes: string | null
   fileUrl: string | null
   fileName: string | null
+  isGolden: boolean
+  structuredData: runtime.JsonValue | null
   createdAt: Date
   _count: ResumeVersionCountAggregateOutputType | null
   _min: ResumeVersionMinAggregateOutputType | null
@@ -189,8 +199,12 @@ export type ResumeVersionWhereInput = {
   notes?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
   fileUrl?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
   fileName?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
+  isGolden?: Prisma.BoolFilter<"ResumeVersion"> | boolean
+  structuredData?: Prisma.JsonNullableFilter<"ResumeVersion">
   createdAt?: Prisma.DateTimeFilter<"ResumeVersion"> | Date | string
   applications?: Prisma.ApplicationListRelationFilter
+  parents?: Prisma.ResumeLineageListRelationFilter
+  children?: Prisma.ResumeLineageListRelationFilter
 }
 
 export type ResumeVersionOrderByWithRelationInput = {
@@ -199,8 +213,12 @@ export type ResumeVersionOrderByWithRelationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   fileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  isGolden?: Prisma.SortOrder
+  structuredData?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   applications?: Prisma.ApplicationOrderByRelationAggregateInput
+  parents?: Prisma.ResumeLineageOrderByRelationAggregateInput
+  children?: Prisma.ResumeLineageOrderByRelationAggregateInput
 }
 
 export type ResumeVersionWhereUniqueInput = Prisma.AtLeast<{
@@ -212,8 +230,12 @@ export type ResumeVersionWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
   fileUrl?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
   fileName?: Prisma.StringNullableFilter<"ResumeVersion"> | string | null
+  isGolden?: Prisma.BoolFilter<"ResumeVersion"> | boolean
+  structuredData?: Prisma.JsonNullableFilter<"ResumeVersion">
   createdAt?: Prisma.DateTimeFilter<"ResumeVersion"> | Date | string
   applications?: Prisma.ApplicationListRelationFilter
+  parents?: Prisma.ResumeLineageListRelationFilter
+  children?: Prisma.ResumeLineageListRelationFilter
 }, "id">
 
 export type ResumeVersionOrderByWithAggregationInput = {
@@ -222,6 +244,8 @@ export type ResumeVersionOrderByWithAggregationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   fileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  isGolden?: Prisma.SortOrder
+  structuredData?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ResumeVersionCountOrderByAggregateInput
   _max?: Prisma.ResumeVersionMaxOrderByAggregateInput
@@ -237,6 +261,8 @@ export type ResumeVersionScalarWhereWithAggregatesInput = {
   notes?: Prisma.StringNullableWithAggregatesFilter<"ResumeVersion"> | string | null
   fileUrl?: Prisma.StringNullableWithAggregatesFilter<"ResumeVersion"> | string | null
   fileName?: Prisma.StringNullableWithAggregatesFilter<"ResumeVersion"> | string | null
+  isGolden?: Prisma.BoolWithAggregatesFilter<"ResumeVersion"> | boolean
+  structuredData?: Prisma.JsonNullableWithAggregatesFilter<"ResumeVersion">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ResumeVersion"> | Date | string
 }
 
@@ -246,8 +272,12 @@ export type ResumeVersionCreateInput = {
   notes?: string | null
   fileUrl?: string | null
   fileName?: string | null
+  isGolden?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   applications?: Prisma.ApplicationCreateNestedManyWithoutResumeInput
+  parents?: Prisma.ResumeLineageCreateNestedManyWithoutResumeInput
+  children?: Prisma.ResumeLineageCreateNestedManyWithoutParentInput
 }
 
 export type ResumeVersionUncheckedCreateInput = {
@@ -256,8 +286,12 @@ export type ResumeVersionUncheckedCreateInput = {
   notes?: string | null
   fileUrl?: string | null
   fileName?: string | null
+  isGolden?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutResumeInput
+  parents?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutResumeInput
+  children?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type ResumeVersionUpdateInput = {
@@ -266,8 +300,12 @@ export type ResumeVersionUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.ApplicationUpdateManyWithoutResumeNestedInput
+  parents?: Prisma.ResumeLineageUpdateManyWithoutResumeNestedInput
+  children?: Prisma.ResumeLineageUpdateManyWithoutParentNestedInput
 }
 
 export type ResumeVersionUncheckedUpdateInput = {
@@ -276,8 +314,12 @@ export type ResumeVersionUncheckedUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutResumeNestedInput
+  parents?: Prisma.ResumeLineageUncheckedUpdateManyWithoutResumeNestedInput
+  children?: Prisma.ResumeLineageUncheckedUpdateManyWithoutParentNestedInput
 }
 
 export type ResumeVersionCreateManyInput = {
@@ -286,6 +328,8 @@ export type ResumeVersionCreateManyInput = {
   notes?: string | null
   fileUrl?: string | null
   fileName?: string | null
+  isGolden?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -295,6 +339,8 @@ export type ResumeVersionUpdateManyMutationInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -304,6 +350,8 @@ export type ResumeVersionUncheckedUpdateManyInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -313,6 +361,8 @@ export type ResumeVersionCountOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
   fileName?: Prisma.SortOrder
+  isGolden?: Prisma.SortOrder
+  structuredData?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -322,6 +372,7 @@ export type ResumeVersionMaxOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
   fileName?: Prisma.SortOrder
+  isGolden?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -331,6 +382,7 @@ export type ResumeVersionMinOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
   fileName?: Prisma.SortOrder
+  isGolden?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -341,6 +393,10 @@ export type ResumeVersionScalarRelationFilter = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type ResumeVersionCreateNestedOneWithoutApplicationsInput = {
@@ -357,13 +413,45 @@ export type ResumeVersionUpdateOneRequiredWithoutApplicationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ResumeVersionUpdateToOneWithWhereWithoutApplicationsInput, Prisma.ResumeVersionUpdateWithoutApplicationsInput>, Prisma.ResumeVersionUncheckedUpdateWithoutApplicationsInput>
 }
 
+export type ResumeVersionCreateNestedOneWithoutParentsInput = {
+  create?: Prisma.XOR<Prisma.ResumeVersionCreateWithoutParentsInput, Prisma.ResumeVersionUncheckedCreateWithoutParentsInput>
+  connectOrCreate?: Prisma.ResumeVersionCreateOrConnectWithoutParentsInput
+  connect?: Prisma.ResumeVersionWhereUniqueInput
+}
+
+export type ResumeVersionCreateNestedOneWithoutChildrenInput = {
+  create?: Prisma.XOR<Prisma.ResumeVersionCreateWithoutChildrenInput, Prisma.ResumeVersionUncheckedCreateWithoutChildrenInput>
+  connectOrCreate?: Prisma.ResumeVersionCreateOrConnectWithoutChildrenInput
+  connect?: Prisma.ResumeVersionWhereUniqueInput
+}
+
+export type ResumeVersionUpdateOneRequiredWithoutParentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ResumeVersionCreateWithoutParentsInput, Prisma.ResumeVersionUncheckedCreateWithoutParentsInput>
+  connectOrCreate?: Prisma.ResumeVersionCreateOrConnectWithoutParentsInput
+  upsert?: Prisma.ResumeVersionUpsertWithoutParentsInput
+  connect?: Prisma.ResumeVersionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResumeVersionUpdateToOneWithWhereWithoutParentsInput, Prisma.ResumeVersionUpdateWithoutParentsInput>, Prisma.ResumeVersionUncheckedUpdateWithoutParentsInput>
+}
+
+export type ResumeVersionUpdateOneRequiredWithoutChildrenNestedInput = {
+  create?: Prisma.XOR<Prisma.ResumeVersionCreateWithoutChildrenInput, Prisma.ResumeVersionUncheckedCreateWithoutChildrenInput>
+  connectOrCreate?: Prisma.ResumeVersionCreateOrConnectWithoutChildrenInput
+  upsert?: Prisma.ResumeVersionUpsertWithoutChildrenInput
+  connect?: Prisma.ResumeVersionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResumeVersionUpdateToOneWithWhereWithoutChildrenInput, Prisma.ResumeVersionUpdateWithoutChildrenInput>, Prisma.ResumeVersionUncheckedUpdateWithoutChildrenInput>
+}
+
 export type ResumeVersionCreateWithoutApplicationsInput = {
   id?: string
   label: string
   notes?: string | null
   fileUrl?: string | null
   fileName?: string | null
+  isGolden?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  parents?: Prisma.ResumeLineageCreateNestedManyWithoutResumeInput
+  children?: Prisma.ResumeLineageCreateNestedManyWithoutParentInput
 }
 
 export type ResumeVersionUncheckedCreateWithoutApplicationsInput = {
@@ -372,7 +460,11 @@ export type ResumeVersionUncheckedCreateWithoutApplicationsInput = {
   notes?: string | null
   fileUrl?: string | null
   fileName?: string | null
+  isGolden?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
+  parents?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutResumeInput
+  children?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutParentInput
 }
 
 export type ResumeVersionCreateOrConnectWithoutApplicationsInput = {
@@ -397,7 +489,11 @@ export type ResumeVersionUpdateWithoutApplicationsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parents?: Prisma.ResumeLineageUpdateManyWithoutResumeNestedInput
+  children?: Prisma.ResumeLineageUpdateManyWithoutParentNestedInput
 }
 
 export type ResumeVersionUncheckedUpdateWithoutApplicationsInput = {
@@ -406,7 +502,147 @@ export type ResumeVersionUncheckedUpdateWithoutApplicationsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parents?: Prisma.ResumeLineageUncheckedUpdateManyWithoutResumeNestedInput
+  children?: Prisma.ResumeLineageUncheckedUpdateManyWithoutParentNestedInput
+}
+
+export type ResumeVersionCreateWithoutParentsInput = {
+  id?: string
+  label: string
+  notes?: string | null
+  fileUrl?: string | null
+  fileName?: string | null
+  isGolden?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  applications?: Prisma.ApplicationCreateNestedManyWithoutResumeInput
+  children?: Prisma.ResumeLineageCreateNestedManyWithoutParentInput
+}
+
+export type ResumeVersionUncheckedCreateWithoutParentsInput = {
+  id?: string
+  label: string
+  notes?: string | null
+  fileUrl?: string | null
+  fileName?: string | null
+  isGolden?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutResumeInput
+  children?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutParentInput
+}
+
+export type ResumeVersionCreateOrConnectWithoutParentsInput = {
+  where: Prisma.ResumeVersionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResumeVersionCreateWithoutParentsInput, Prisma.ResumeVersionUncheckedCreateWithoutParentsInput>
+}
+
+export type ResumeVersionCreateWithoutChildrenInput = {
+  id?: string
+  label: string
+  notes?: string | null
+  fileUrl?: string | null
+  fileName?: string | null
+  isGolden?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  applications?: Prisma.ApplicationCreateNestedManyWithoutResumeInput
+  parents?: Prisma.ResumeLineageCreateNestedManyWithoutResumeInput
+}
+
+export type ResumeVersionUncheckedCreateWithoutChildrenInput = {
+  id?: string
+  label: string
+  notes?: string | null
+  fileUrl?: string | null
+  fileName?: string | null
+  isGolden?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutResumeInput
+  parents?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutResumeInput
+}
+
+export type ResumeVersionCreateOrConnectWithoutChildrenInput = {
+  where: Prisma.ResumeVersionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResumeVersionCreateWithoutChildrenInput, Prisma.ResumeVersionUncheckedCreateWithoutChildrenInput>
+}
+
+export type ResumeVersionUpsertWithoutParentsInput = {
+  update: Prisma.XOR<Prisma.ResumeVersionUpdateWithoutParentsInput, Prisma.ResumeVersionUncheckedUpdateWithoutParentsInput>
+  create: Prisma.XOR<Prisma.ResumeVersionCreateWithoutParentsInput, Prisma.ResumeVersionUncheckedCreateWithoutParentsInput>
+  where?: Prisma.ResumeVersionWhereInput
+}
+
+export type ResumeVersionUpdateToOneWithWhereWithoutParentsInput = {
+  where?: Prisma.ResumeVersionWhereInput
+  data: Prisma.XOR<Prisma.ResumeVersionUpdateWithoutParentsInput, Prisma.ResumeVersionUncheckedUpdateWithoutParentsInput>
+}
+
+export type ResumeVersionUpdateWithoutParentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  applications?: Prisma.ApplicationUpdateManyWithoutResumeNestedInput
+  children?: Prisma.ResumeLineageUpdateManyWithoutParentNestedInput
+}
+
+export type ResumeVersionUncheckedUpdateWithoutParentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  applications?: Prisma.ApplicationUncheckedUpdateManyWithoutResumeNestedInput
+  children?: Prisma.ResumeLineageUncheckedUpdateManyWithoutParentNestedInput
+}
+
+export type ResumeVersionUpsertWithoutChildrenInput = {
+  update: Prisma.XOR<Prisma.ResumeVersionUpdateWithoutChildrenInput, Prisma.ResumeVersionUncheckedUpdateWithoutChildrenInput>
+  create: Prisma.XOR<Prisma.ResumeVersionCreateWithoutChildrenInput, Prisma.ResumeVersionUncheckedCreateWithoutChildrenInput>
+  where?: Prisma.ResumeVersionWhereInput
+}
+
+export type ResumeVersionUpdateToOneWithWhereWithoutChildrenInput = {
+  where?: Prisma.ResumeVersionWhereInput
+  data: Prisma.XOR<Prisma.ResumeVersionUpdateWithoutChildrenInput, Prisma.ResumeVersionUncheckedUpdateWithoutChildrenInput>
+}
+
+export type ResumeVersionUpdateWithoutChildrenInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  applications?: Prisma.ApplicationUpdateManyWithoutResumeNestedInput
+  parents?: Prisma.ResumeLineageUpdateManyWithoutResumeNestedInput
+}
+
+export type ResumeVersionUncheckedUpdateWithoutChildrenInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  applications?: Prisma.ApplicationUncheckedUpdateManyWithoutResumeNestedInput
+  parents?: Prisma.ResumeLineageUncheckedUpdateManyWithoutResumeNestedInput
 }
 
 
@@ -416,10 +652,14 @@ export type ResumeVersionUncheckedUpdateWithoutApplicationsInput = {
 
 export type ResumeVersionCountOutputType = {
   applications: number
+  parents: number
+  children: number
 }
 
 export type ResumeVersionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applications?: boolean | ResumeVersionCountOutputTypeCountApplicationsArgs
+  parents?: boolean | ResumeVersionCountOutputTypeCountParentsArgs
+  children?: boolean | ResumeVersionCountOutputTypeCountChildrenArgs
 }
 
 /**
@@ -439,6 +679,20 @@ export type ResumeVersionCountOutputTypeCountApplicationsArgs<ExtArgs extends ru
   where?: Prisma.ApplicationWhereInput
 }
 
+/**
+ * ResumeVersionCountOutputType without action
+ */
+export type ResumeVersionCountOutputTypeCountParentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ResumeLineageWhereInput
+}
+
+/**
+ * ResumeVersionCountOutputType without action
+ */
+export type ResumeVersionCountOutputTypeCountChildrenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ResumeLineageWhereInput
+}
+
 
 export type ResumeVersionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -446,8 +700,12 @@ export type ResumeVersionSelect<ExtArgs extends runtime.Types.Extensions.Interna
   notes?: boolean
   fileUrl?: boolean
   fileName?: boolean
+  isGolden?: boolean
+  structuredData?: boolean
   createdAt?: boolean
   applications?: boolean | Prisma.ResumeVersion$applicationsArgs<ExtArgs>
+  parents?: boolean | Prisma.ResumeVersion$parentsArgs<ExtArgs>
+  children?: boolean | Prisma.ResumeVersion$childrenArgs<ExtArgs>
   _count?: boolean | Prisma.ResumeVersionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["resumeVersion"]>
 
@@ -457,6 +715,8 @@ export type ResumeVersionSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   notes?: boolean
   fileUrl?: boolean
   fileName?: boolean
+  isGolden?: boolean
+  structuredData?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["resumeVersion"]>
 
@@ -466,6 +726,8 @@ export type ResumeVersionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   notes?: boolean
   fileUrl?: boolean
   fileName?: boolean
+  isGolden?: boolean
+  structuredData?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["resumeVersion"]>
 
@@ -475,12 +737,16 @@ export type ResumeVersionSelectScalar = {
   notes?: boolean
   fileUrl?: boolean
   fileName?: boolean
+  isGolden?: boolean
+  structuredData?: boolean
   createdAt?: boolean
 }
 
-export type ResumeVersionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "label" | "notes" | "fileUrl" | "fileName" | "createdAt", ExtArgs["result"]["resumeVersion"]>
+export type ResumeVersionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "label" | "notes" | "fileUrl" | "fileName" | "isGolden" | "structuredData" | "createdAt", ExtArgs["result"]["resumeVersion"]>
 export type ResumeVersionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applications?: boolean | Prisma.ResumeVersion$applicationsArgs<ExtArgs>
+  parents?: boolean | Prisma.ResumeVersion$parentsArgs<ExtArgs>
+  children?: boolean | Prisma.ResumeVersion$childrenArgs<ExtArgs>
   _count?: boolean | Prisma.ResumeVersionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ResumeVersionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -490,6 +756,8 @@ export type $ResumeVersionPayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "ResumeVersion"
   objects: {
     applications: Prisma.$ApplicationPayload<ExtArgs>[]
+    parents: Prisma.$ResumeLineagePayload<ExtArgs>[]
+    children: Prisma.$ResumeLineagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -497,6 +765,8 @@ export type $ResumeVersionPayload<ExtArgs extends runtime.Types.Extensions.Inter
     notes: string | null
     fileUrl: string | null
     fileName: string | null
+    isGolden: boolean
+    structuredData: runtime.JsonValue | null
     createdAt: Date
   }, ExtArgs["result"]["resumeVersion"]>
   composites: {}
@@ -893,6 +1163,8 @@ readonly fields: ResumeVersionFieldRefs;
 export interface Prisma__ResumeVersionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   applications<T extends Prisma.ResumeVersion$applicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeVersion$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  parents<T extends Prisma.ResumeVersion$parentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeVersion$parentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeLineagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  children<T extends Prisma.ResumeVersion$childrenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeVersion$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeLineagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -927,6 +1199,8 @@ export interface ResumeVersionFieldRefs {
   readonly notes: Prisma.FieldRef<"ResumeVersion", 'String'>
   readonly fileUrl: Prisma.FieldRef<"ResumeVersion", 'String'>
   readonly fileName: Prisma.FieldRef<"ResumeVersion", 'String'>
+  readonly isGolden: Prisma.FieldRef<"ResumeVersion", 'Boolean'>
+  readonly structuredData: Prisma.FieldRef<"ResumeVersion", 'Json'>
   readonly createdAt: Prisma.FieldRef<"ResumeVersion", 'DateTime'>
 }
     
@@ -1342,6 +1616,54 @@ export type ResumeVersion$applicationsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.ApplicationScalarFieldEnum | Prisma.ApplicationScalarFieldEnum[]
+}
+
+/**
+ * ResumeVersion.parents
+ */
+export type ResumeVersion$parentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ResumeLineage
+   */
+  select?: Prisma.ResumeLineageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ResumeLineage
+   */
+  omit?: Prisma.ResumeLineageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeLineageInclude<ExtArgs> | null
+  where?: Prisma.ResumeLineageWhereInput
+  orderBy?: Prisma.ResumeLineageOrderByWithRelationInput | Prisma.ResumeLineageOrderByWithRelationInput[]
+  cursor?: Prisma.ResumeLineageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ResumeLineageScalarFieldEnum | Prisma.ResumeLineageScalarFieldEnum[]
+}
+
+/**
+ * ResumeVersion.children
+ */
+export type ResumeVersion$childrenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ResumeLineage
+   */
+  select?: Prisma.ResumeLineageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ResumeLineage
+   */
+  omit?: Prisma.ResumeLineageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeLineageInclude<ExtArgs> | null
+  where?: Prisma.ResumeLineageWhereInput
+  orderBy?: Prisma.ResumeLineageOrderByWithRelationInput | Prisma.ResumeLineageOrderByWithRelationInput[]
+  cursor?: Prisma.ResumeLineageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ResumeLineageScalarFieldEnum | Prisma.ResumeLineageScalarFieldEnum[]
 }
 
 /**

@@ -9,6 +9,15 @@
 * 🟢 You can import this file directly.
 */
 
+export const RelationType = {
+  BASED_ON: 'BASED_ON',
+  BORROWED_BULLET: 'BORROWED_BULLET',
+  MERGED_FROM: 'MERGED_FROM'
+} as const
+
+export type RelationType = (typeof RelationType)[keyof typeof RelationType]
+
+
 export const Status = {
   APPLIED: 'APPLIED',
   PHONE_SCREEN: 'PHONE_SCREEN',

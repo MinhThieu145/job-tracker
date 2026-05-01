@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Company: 'Company',
   ResumeVersion: 'ResumeVersion',
-  Application: 'Application'
+  Application: 'Application',
+  ResumeLineage: 'ResumeLineage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -87,6 +88,8 @@ export const ResumeVersionScalarFieldEnum = {
   notes: 'notes',
   fileUrl: 'fileUrl',
   fileName: 'fileName',
+  isGolden: 'isGolden',
+  structuredData: 'structuredData',
   createdAt: 'createdAt'
 } as const
 
@@ -110,6 +113,17 @@ export const ApplicationScalarFieldEnum = {
 export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]
 
 
+export const ResumeLineageScalarFieldEnum = {
+  resumeId: 'resumeId',
+  parentResumeId: 'parentResumeId',
+  relationType: 'relationType',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type ResumeLineageScalarFieldEnum = (typeof ResumeLineageScalarFieldEnum)[keyof typeof ResumeLineageScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -118,12 +132,29 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 export const NullsOrder = {
