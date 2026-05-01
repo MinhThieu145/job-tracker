@@ -21,14 +21,16 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
     try {
-        const { label, notes, fileName, fileUrl } = await req.json();
+        const { label, notes, fileName, fileUrl, isGolden, structuredData } = await req.json();
 
         const newResume = await prisma.resumeVersion.create({
             data: {
                 label: label,
                 notes: notes,
                 fileName: fileName,
-                fileUrl: fileUrl
+                fileUrl: fileUrl,
+                isGolden: isGolden,
+                structuredData: structuredData
             }
         })
 
