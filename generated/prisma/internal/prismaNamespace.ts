@@ -387,7 +387,8 @@ export const ModelName = {
   Company: 'Company',
   ResumeVersion: 'ResumeVersion',
   Application: 'Application',
-  ResumeLineage: 'ResumeLineage'
+  ResumeLineage: 'ResumeLineage',
+  ResumeAnalysis: 'ResumeAnalysis'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "company" | "resumeVersion" | "application" | "resumeLineage"
+    modelProps: "company" | "resumeVersion" | "application" | "resumeLineage" | "resumeAnalysis"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +704,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ResumeAnalysis: {
+      payload: Prisma.$ResumeAnalysisPayload<ExtArgs>
+      fields: Prisma.ResumeAnalysisFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ResumeAnalysisFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeAnalysisPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ResumeAnalysisFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeAnalysisPayload>
+        }
+        findFirst: {
+          args: Prisma.ResumeAnalysisFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeAnalysisPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ResumeAnalysisFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeAnalysisPayload>
+        }
+        findMany: {
+          args: Prisma.ResumeAnalysisFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeAnalysisPayload>[]
+        }
+        create: {
+          args: Prisma.ResumeAnalysisCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeAnalysisPayload>
+        }
+        createMany: {
+          args: Prisma.ResumeAnalysisCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ResumeAnalysisCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeAnalysisPayload>[]
+        }
+        delete: {
+          args: Prisma.ResumeAnalysisDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeAnalysisPayload>
+        }
+        update: {
+          args: Prisma.ResumeAnalysisUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeAnalysisPayload>
+        }
+        deleteMany: {
+          args: Prisma.ResumeAnalysisDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ResumeAnalysisUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ResumeAnalysisUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeAnalysisPayload>[]
+        }
+        upsert: {
+          args: Prisma.ResumeAnalysisUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeAnalysisPayload>
+        }
+        aggregate: {
+          args: Prisma.ResumeAnalysisAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateResumeAnalysis>
+        }
+        groupBy: {
+          args: Prisma.ResumeAnalysisGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResumeAnalysisGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ResumeAnalysisCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResumeAnalysisCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -793,6 +868,21 @@ export const ResumeLineageScalarFieldEnum = {
 export type ResumeLineageScalarFieldEnum = (typeof ResumeLineageScalarFieldEnum)[keyof typeof ResumeLineageScalarFieldEnum]
 
 
+export const ResumeAnalysisScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  resumeId: 'resumeId',
+  resultJson: 'resultJson',
+  prompt: 'prompt',
+  promptVersion: 'promptVersion',
+  agentConfig: 'agentConfig',
+  inputSnapshot: 'inputSnapshot',
+  createdAt: 'createdAt'
+} as const
+
+export type ResumeAnalysisScalarFieldEnum = (typeof ResumeAnalysisScalarFieldEnum)[keyof typeof ResumeAnalysisScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -807,6 +897,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1044,6 +1141,7 @@ export type GlobalOmitConfig = {
   resumeVersion?: Prisma.ResumeVersionOmit
   application?: Prisma.ApplicationOmit
   resumeLineage?: Prisma.ResumeLineageOmit
+  resumeAnalysis?: Prisma.ResumeAnalysisOmit
 }
 
 /* Types for Logging */

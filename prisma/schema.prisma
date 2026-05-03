@@ -25,6 +25,7 @@ model ResumeVersion {
   applications   Application[]
   parents        ResumeLineage[] @relation("Child")
   children       ResumeLineage[] @relation("Parent")
+  analyses       ResumeAnalysis[]
   createdAt      DateTime        @default(now())
 }
 
@@ -41,6 +42,7 @@ model Application {
   appliedDate    DateTime      @default(now())
   status         Status        @default(APPLIED)
   notes          String?       @db.Text
+  analyses       ResumeAnalysis[]
   createdAt      DateTime      @default(now())
 }
 
@@ -54,6 +56,30 @@ model ResumeLineage {
   parent         ResumeVersion @relation("Parent", fields: [parentResumeId], references: [id])
 
   @@id([resumeId, parentResumeId])
+}
+
+model ResumeAnalysis {
+  id            String   @id @default(cuid())
+
+  applicationId String
+  resumeId      String
+
+  resultJson    Json
+
+  prompt        String?  @db.Text
+  promptVersion String?  @default("resume-analysis-v1")
+  agentConfig   Json?
+  inputSnapshot Json?
+
+  createdAt     DateTime @default(now())
+
+  application   Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  resume        ResumeVersion @relation(fields: [resumeId], references: [id])
+
+  @@index([applicationId])
+  @@index([resumeId])
+  @@index([applicationId, resumeId])
+  @@index([applicationId, resumeId, createdAt])
 }
 
 enum RelationType {

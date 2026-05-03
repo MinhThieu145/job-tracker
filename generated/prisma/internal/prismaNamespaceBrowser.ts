@@ -54,7 +54,8 @@ export const ModelName = {
   Company: 'Company',
   ResumeVersion: 'ResumeVersion',
   Application: 'Application',
-  ResumeLineage: 'ResumeLineage'
+  ResumeLineage: 'ResumeLineage',
+  ResumeAnalysis: 'ResumeAnalysis'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -124,6 +125,21 @@ export const ResumeLineageScalarFieldEnum = {
 export type ResumeLineageScalarFieldEnum = (typeof ResumeLineageScalarFieldEnum)[keyof typeof ResumeLineageScalarFieldEnum]
 
 
+export const ResumeAnalysisScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  resumeId: 'resumeId',
+  resultJson: 'resultJson',
+  prompt: 'prompt',
+  promptVersion: 'promptVersion',
+  agentConfig: 'agentConfig',
+  inputSnapshot: 'inputSnapshot',
+  createdAt: 'createdAt'
+} as const
+
+export type ResumeAnalysisScalarFieldEnum = (typeof ResumeAnalysisScalarFieldEnum)[keyof typeof ResumeAnalysisScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -138,6 +154,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

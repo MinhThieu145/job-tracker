@@ -205,6 +205,7 @@ export type ResumeVersionWhereInput = {
   applications?: Prisma.ApplicationListRelationFilter
   parents?: Prisma.ResumeLineageListRelationFilter
   children?: Prisma.ResumeLineageListRelationFilter
+  analyses?: Prisma.ResumeAnalysisListRelationFilter
 }
 
 export type ResumeVersionOrderByWithRelationInput = {
@@ -219,6 +220,7 @@ export type ResumeVersionOrderByWithRelationInput = {
   applications?: Prisma.ApplicationOrderByRelationAggregateInput
   parents?: Prisma.ResumeLineageOrderByRelationAggregateInput
   children?: Prisma.ResumeLineageOrderByRelationAggregateInput
+  analyses?: Prisma.ResumeAnalysisOrderByRelationAggregateInput
 }
 
 export type ResumeVersionWhereUniqueInput = Prisma.AtLeast<{
@@ -236,6 +238,7 @@ export type ResumeVersionWhereUniqueInput = Prisma.AtLeast<{
   applications?: Prisma.ApplicationListRelationFilter
   parents?: Prisma.ResumeLineageListRelationFilter
   children?: Prisma.ResumeLineageListRelationFilter
+  analyses?: Prisma.ResumeAnalysisListRelationFilter
 }, "id">
 
 export type ResumeVersionOrderByWithAggregationInput = {
@@ -278,6 +281,7 @@ export type ResumeVersionCreateInput = {
   applications?: Prisma.ApplicationCreateNestedManyWithoutResumeInput
   parents?: Prisma.ResumeLineageCreateNestedManyWithoutResumeInput
   children?: Prisma.ResumeLineageCreateNestedManyWithoutParentInput
+  analyses?: Prisma.ResumeAnalysisCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeVersionUncheckedCreateInput = {
@@ -292,6 +296,7 @@ export type ResumeVersionUncheckedCreateInput = {
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutResumeInput
   parents?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutResumeInput
   children?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutParentInput
+  analyses?: Prisma.ResumeAnalysisUncheckedCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeVersionUpdateInput = {
@@ -306,6 +311,7 @@ export type ResumeVersionUpdateInput = {
   applications?: Prisma.ApplicationUpdateManyWithoutResumeNestedInput
   parents?: Prisma.ResumeLineageUpdateManyWithoutResumeNestedInput
   children?: Prisma.ResumeLineageUpdateManyWithoutParentNestedInput
+  analyses?: Prisma.ResumeAnalysisUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeVersionUncheckedUpdateInput = {
@@ -320,6 +326,7 @@ export type ResumeVersionUncheckedUpdateInput = {
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutResumeNestedInput
   parents?: Prisma.ResumeLineageUncheckedUpdateManyWithoutResumeNestedInput
   children?: Prisma.ResumeLineageUncheckedUpdateManyWithoutParentNestedInput
+  analyses?: Prisma.ResumeAnalysisUncheckedUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeVersionCreateManyInput = {
@@ -441,6 +448,20 @@ export type ResumeVersionUpdateOneRequiredWithoutChildrenNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ResumeVersionUpdateToOneWithWhereWithoutChildrenInput, Prisma.ResumeVersionUpdateWithoutChildrenInput>, Prisma.ResumeVersionUncheckedUpdateWithoutChildrenInput>
 }
 
+export type ResumeVersionCreateNestedOneWithoutAnalysesInput = {
+  create?: Prisma.XOR<Prisma.ResumeVersionCreateWithoutAnalysesInput, Prisma.ResumeVersionUncheckedCreateWithoutAnalysesInput>
+  connectOrCreate?: Prisma.ResumeVersionCreateOrConnectWithoutAnalysesInput
+  connect?: Prisma.ResumeVersionWhereUniqueInput
+}
+
+export type ResumeVersionUpdateOneRequiredWithoutAnalysesNestedInput = {
+  create?: Prisma.XOR<Prisma.ResumeVersionCreateWithoutAnalysesInput, Prisma.ResumeVersionUncheckedCreateWithoutAnalysesInput>
+  connectOrCreate?: Prisma.ResumeVersionCreateOrConnectWithoutAnalysesInput
+  upsert?: Prisma.ResumeVersionUpsertWithoutAnalysesInput
+  connect?: Prisma.ResumeVersionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResumeVersionUpdateToOneWithWhereWithoutAnalysesInput, Prisma.ResumeVersionUpdateWithoutAnalysesInput>, Prisma.ResumeVersionUncheckedUpdateWithoutAnalysesInput>
+}
+
 export type ResumeVersionCreateWithoutApplicationsInput = {
   id?: string
   label: string
@@ -452,6 +473,7 @@ export type ResumeVersionCreateWithoutApplicationsInput = {
   createdAt?: Date | string
   parents?: Prisma.ResumeLineageCreateNestedManyWithoutResumeInput
   children?: Prisma.ResumeLineageCreateNestedManyWithoutParentInput
+  analyses?: Prisma.ResumeAnalysisCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeVersionUncheckedCreateWithoutApplicationsInput = {
@@ -465,6 +487,7 @@ export type ResumeVersionUncheckedCreateWithoutApplicationsInput = {
   createdAt?: Date | string
   parents?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutResumeInput
   children?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutParentInput
+  analyses?: Prisma.ResumeAnalysisUncheckedCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeVersionCreateOrConnectWithoutApplicationsInput = {
@@ -494,6 +517,7 @@ export type ResumeVersionUpdateWithoutApplicationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parents?: Prisma.ResumeLineageUpdateManyWithoutResumeNestedInput
   children?: Prisma.ResumeLineageUpdateManyWithoutParentNestedInput
+  analyses?: Prisma.ResumeAnalysisUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeVersionUncheckedUpdateWithoutApplicationsInput = {
@@ -507,6 +531,7 @@ export type ResumeVersionUncheckedUpdateWithoutApplicationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parents?: Prisma.ResumeLineageUncheckedUpdateManyWithoutResumeNestedInput
   children?: Prisma.ResumeLineageUncheckedUpdateManyWithoutParentNestedInput
+  analyses?: Prisma.ResumeAnalysisUncheckedUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeVersionCreateWithoutParentsInput = {
@@ -520,6 +545,7 @@ export type ResumeVersionCreateWithoutParentsInput = {
   createdAt?: Date | string
   applications?: Prisma.ApplicationCreateNestedManyWithoutResumeInput
   children?: Prisma.ResumeLineageCreateNestedManyWithoutParentInput
+  analyses?: Prisma.ResumeAnalysisCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeVersionUncheckedCreateWithoutParentsInput = {
@@ -533,6 +559,7 @@ export type ResumeVersionUncheckedCreateWithoutParentsInput = {
   createdAt?: Date | string
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutResumeInput
   children?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutParentInput
+  analyses?: Prisma.ResumeAnalysisUncheckedCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeVersionCreateOrConnectWithoutParentsInput = {
@@ -551,6 +578,7 @@ export type ResumeVersionCreateWithoutChildrenInput = {
   createdAt?: Date | string
   applications?: Prisma.ApplicationCreateNestedManyWithoutResumeInput
   parents?: Prisma.ResumeLineageCreateNestedManyWithoutResumeInput
+  analyses?: Prisma.ResumeAnalysisCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeVersionUncheckedCreateWithoutChildrenInput = {
@@ -564,6 +592,7 @@ export type ResumeVersionUncheckedCreateWithoutChildrenInput = {
   createdAt?: Date | string
   applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutResumeInput
   parents?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutResumeInput
+  analyses?: Prisma.ResumeAnalysisUncheckedCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeVersionCreateOrConnectWithoutChildrenInput = {
@@ -593,6 +622,7 @@ export type ResumeVersionUpdateWithoutParentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.ApplicationUpdateManyWithoutResumeNestedInput
   children?: Prisma.ResumeLineageUpdateManyWithoutParentNestedInput
+  analyses?: Prisma.ResumeAnalysisUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeVersionUncheckedUpdateWithoutParentsInput = {
@@ -606,6 +636,7 @@ export type ResumeVersionUncheckedUpdateWithoutParentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutResumeNestedInput
   children?: Prisma.ResumeLineageUncheckedUpdateManyWithoutParentNestedInput
+  analyses?: Prisma.ResumeAnalysisUncheckedUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeVersionUpsertWithoutChildrenInput = {
@@ -630,6 +661,7 @@ export type ResumeVersionUpdateWithoutChildrenInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.ApplicationUpdateManyWithoutResumeNestedInput
   parents?: Prisma.ResumeLineageUpdateManyWithoutResumeNestedInput
+  analyses?: Prisma.ResumeAnalysisUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeVersionUncheckedUpdateWithoutChildrenInput = {
@@ -643,6 +675,79 @@ export type ResumeVersionUncheckedUpdateWithoutChildrenInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   applications?: Prisma.ApplicationUncheckedUpdateManyWithoutResumeNestedInput
   parents?: Prisma.ResumeLineageUncheckedUpdateManyWithoutResumeNestedInput
+  analyses?: Prisma.ResumeAnalysisUncheckedUpdateManyWithoutResumeNestedInput
+}
+
+export type ResumeVersionCreateWithoutAnalysesInput = {
+  id?: string
+  label: string
+  notes?: string | null
+  fileUrl?: string | null
+  fileName?: string | null
+  isGolden?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  applications?: Prisma.ApplicationCreateNestedManyWithoutResumeInput
+  parents?: Prisma.ResumeLineageCreateNestedManyWithoutResumeInput
+  children?: Prisma.ResumeLineageCreateNestedManyWithoutParentInput
+}
+
+export type ResumeVersionUncheckedCreateWithoutAnalysesInput = {
+  id?: string
+  label: string
+  notes?: string | null
+  fileUrl?: string | null
+  fileName?: string | null
+  isGolden?: boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutResumeInput
+  parents?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutResumeInput
+  children?: Prisma.ResumeLineageUncheckedCreateNestedManyWithoutParentInput
+}
+
+export type ResumeVersionCreateOrConnectWithoutAnalysesInput = {
+  where: Prisma.ResumeVersionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResumeVersionCreateWithoutAnalysesInput, Prisma.ResumeVersionUncheckedCreateWithoutAnalysesInput>
+}
+
+export type ResumeVersionUpsertWithoutAnalysesInput = {
+  update: Prisma.XOR<Prisma.ResumeVersionUpdateWithoutAnalysesInput, Prisma.ResumeVersionUncheckedUpdateWithoutAnalysesInput>
+  create: Prisma.XOR<Prisma.ResumeVersionCreateWithoutAnalysesInput, Prisma.ResumeVersionUncheckedCreateWithoutAnalysesInput>
+  where?: Prisma.ResumeVersionWhereInput
+}
+
+export type ResumeVersionUpdateToOneWithWhereWithoutAnalysesInput = {
+  where?: Prisma.ResumeVersionWhereInput
+  data: Prisma.XOR<Prisma.ResumeVersionUpdateWithoutAnalysesInput, Prisma.ResumeVersionUncheckedUpdateWithoutAnalysesInput>
+}
+
+export type ResumeVersionUpdateWithoutAnalysesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  applications?: Prisma.ApplicationUpdateManyWithoutResumeNestedInput
+  parents?: Prisma.ResumeLineageUpdateManyWithoutResumeNestedInput
+  children?: Prisma.ResumeLineageUpdateManyWithoutParentNestedInput
+}
+
+export type ResumeVersionUncheckedUpdateWithoutAnalysesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isGolden?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  structuredData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  applications?: Prisma.ApplicationUncheckedUpdateManyWithoutResumeNestedInput
+  parents?: Prisma.ResumeLineageUncheckedUpdateManyWithoutResumeNestedInput
+  children?: Prisma.ResumeLineageUncheckedUpdateManyWithoutParentNestedInput
 }
 
 
@@ -654,12 +759,14 @@ export type ResumeVersionCountOutputType = {
   applications: number
   parents: number
   children: number
+  analyses: number
 }
 
 export type ResumeVersionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   applications?: boolean | ResumeVersionCountOutputTypeCountApplicationsArgs
   parents?: boolean | ResumeVersionCountOutputTypeCountParentsArgs
   children?: boolean | ResumeVersionCountOutputTypeCountChildrenArgs
+  analyses?: boolean | ResumeVersionCountOutputTypeCountAnalysesArgs
 }
 
 /**
@@ -693,6 +800,13 @@ export type ResumeVersionCountOutputTypeCountChildrenArgs<ExtArgs extends runtim
   where?: Prisma.ResumeLineageWhereInput
 }
 
+/**
+ * ResumeVersionCountOutputType without action
+ */
+export type ResumeVersionCountOutputTypeCountAnalysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ResumeAnalysisWhereInput
+}
+
 
 export type ResumeVersionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -706,6 +820,7 @@ export type ResumeVersionSelect<ExtArgs extends runtime.Types.Extensions.Interna
   applications?: boolean | Prisma.ResumeVersion$applicationsArgs<ExtArgs>
   parents?: boolean | Prisma.ResumeVersion$parentsArgs<ExtArgs>
   children?: boolean | Prisma.ResumeVersion$childrenArgs<ExtArgs>
+  analyses?: boolean | Prisma.ResumeVersion$analysesArgs<ExtArgs>
   _count?: boolean | Prisma.ResumeVersionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["resumeVersion"]>
 
@@ -747,6 +862,7 @@ export type ResumeVersionInclude<ExtArgs extends runtime.Types.Extensions.Intern
   applications?: boolean | Prisma.ResumeVersion$applicationsArgs<ExtArgs>
   parents?: boolean | Prisma.ResumeVersion$parentsArgs<ExtArgs>
   children?: boolean | Prisma.ResumeVersion$childrenArgs<ExtArgs>
+  analyses?: boolean | Prisma.ResumeVersion$analysesArgs<ExtArgs>
   _count?: boolean | Prisma.ResumeVersionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ResumeVersionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -758,6 +874,7 @@ export type $ResumeVersionPayload<ExtArgs extends runtime.Types.Extensions.Inter
     applications: Prisma.$ApplicationPayload<ExtArgs>[]
     parents: Prisma.$ResumeLineagePayload<ExtArgs>[]
     children: Prisma.$ResumeLineagePayload<ExtArgs>[]
+    analyses: Prisma.$ResumeAnalysisPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1165,6 +1282,7 @@ export interface Prisma__ResumeVersionClient<T, Null = never, ExtArgs extends ru
   applications<T extends Prisma.ResumeVersion$applicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeVersion$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   parents<T extends Prisma.ResumeVersion$parentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeVersion$parentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeLineagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   children<T extends Prisma.ResumeVersion$childrenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeVersion$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeLineagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  analyses<T extends Prisma.ResumeVersion$analysesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeVersion$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1664,6 +1782,30 @@ export type ResumeVersion$childrenArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.ResumeLineageScalarFieldEnum | Prisma.ResumeLineageScalarFieldEnum[]
+}
+
+/**
+ * ResumeVersion.analyses
+ */
+export type ResumeVersion$analysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ResumeAnalysis
+   */
+  select?: Prisma.ResumeAnalysisSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ResumeAnalysis
+   */
+  omit?: Prisma.ResumeAnalysisOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeAnalysisInclude<ExtArgs> | null
+  where?: Prisma.ResumeAnalysisWhereInput
+  orderBy?: Prisma.ResumeAnalysisOrderByWithRelationInput | Prisma.ResumeAnalysisOrderByWithRelationInput[]
+  cursor?: Prisma.ResumeAnalysisWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ResumeAnalysisScalarFieldEnum | Prisma.ResumeAnalysisScalarFieldEnum[]
 }
 
 /**

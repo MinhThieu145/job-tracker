@@ -61,3 +61,8 @@ export type Application = Prisma.ApplicationModel
  * 
  */
 export type ResumeLineage = Prisma.ResumeLineageModel
+/**
+ * Model ResumeAnalysis
+ * 
+ */
+export type ResumeAnalysis = Prisma.ResumeAnalysisModel

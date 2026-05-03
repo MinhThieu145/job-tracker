@@ -232,6 +232,7 @@ export type ApplicationWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
   resume?: Prisma.XOR<Prisma.ResumeVersionScalarRelationFilter, Prisma.ResumeVersionWhereInput>
+  analyses?: Prisma.ResumeAnalysisListRelationFilter
 }
 
 export type ApplicationOrderByWithRelationInput = {
@@ -248,6 +249,7 @@ export type ApplicationOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   company?: Prisma.CompanyOrderByWithRelationInput
   resume?: Prisma.ResumeVersionOrderByWithRelationInput
+  analyses?: Prisma.ResumeAnalysisOrderByRelationAggregateInput
 }
 
 export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
@@ -267,6 +269,7 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.CompanyWhereInput>
   resume?: Prisma.XOR<Prisma.ResumeVersionScalarRelationFilter, Prisma.ResumeVersionWhereInput>
+  analyses?: Prisma.ResumeAnalysisListRelationFilter
 }, "id">
 
 export type ApplicationOrderByWithAggregationInput = {
@@ -315,6 +318,7 @@ export type ApplicationCreateInput = {
   createdAt?: Date | string
   company: Prisma.CompanyCreateNestedOneWithoutApplicationsInput
   resume: Prisma.ResumeVersionCreateNestedOneWithoutApplicationsInput
+  analyses?: Prisma.ResumeAnalysisCreateNestedManyWithoutApplicationInput
 }
 
 export type ApplicationUncheckedCreateInput = {
@@ -329,6 +333,7 @@ export type ApplicationUncheckedCreateInput = {
   status?: $Enums.Status
   notes?: string | null
   createdAt?: Date | string
+  analyses?: Prisma.ResumeAnalysisUncheckedCreateNestedManyWithoutApplicationInput
 }
 
 export type ApplicationUpdateInput = {
@@ -343,6 +348,7 @@ export type ApplicationUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneRequiredWithoutApplicationsNestedInput
   resume?: Prisma.ResumeVersionUpdateOneRequiredWithoutApplicationsNestedInput
+  analyses?: Prisma.ResumeAnalysisUpdateManyWithoutApplicationNestedInput
 }
 
 export type ApplicationUncheckedUpdateInput = {
@@ -357,6 +363,7 @@ export type ApplicationUncheckedUpdateInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  analyses?: Prisma.ResumeAnalysisUncheckedUpdateManyWithoutApplicationNestedInput
 }
 
 export type ApplicationCreateManyInput = {
@@ -451,6 +458,11 @@ export type ApplicationMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
 }
 
+export type ApplicationScalarRelationFilter = {
+  is?: Prisma.ApplicationWhereInput
+  isNot?: Prisma.ApplicationWhereInput
+}
+
 export type ApplicationCreateNestedManyWithoutCompanyInput = {
   create?: Prisma.XOR<Prisma.ApplicationCreateWithoutCompanyInput, Prisma.ApplicationUncheckedCreateWithoutCompanyInput> | Prisma.ApplicationCreateWithoutCompanyInput[] | Prisma.ApplicationUncheckedCreateWithoutCompanyInput[]
   connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutCompanyInput | Prisma.ApplicationCreateOrConnectWithoutCompanyInput[]
@@ -539,6 +551,20 @@ export type EnumStatusFieldUpdateOperationsInput = {
   set?: $Enums.Status
 }
 
+export type ApplicationCreateNestedOneWithoutAnalysesInput = {
+  create?: Prisma.XOR<Prisma.ApplicationCreateWithoutAnalysesInput, Prisma.ApplicationUncheckedCreateWithoutAnalysesInput>
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutAnalysesInput
+  connect?: Prisma.ApplicationWhereUniqueInput
+}
+
+export type ApplicationUpdateOneRequiredWithoutAnalysesNestedInput = {
+  create?: Prisma.XOR<Prisma.ApplicationCreateWithoutAnalysesInput, Prisma.ApplicationUncheckedCreateWithoutAnalysesInput>
+  connectOrCreate?: Prisma.ApplicationCreateOrConnectWithoutAnalysesInput
+  upsert?: Prisma.ApplicationUpsertWithoutAnalysesInput
+  connect?: Prisma.ApplicationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ApplicationUpdateToOneWithWhereWithoutAnalysesInput, Prisma.ApplicationUpdateWithoutAnalysesInput>, Prisma.ApplicationUncheckedUpdateWithoutAnalysesInput>
+}
+
 export type ApplicationCreateWithoutCompanyInput = {
   id?: string
   roleTitle: string
@@ -550,6 +576,7 @@ export type ApplicationCreateWithoutCompanyInput = {
   notes?: string | null
   createdAt?: Date | string
   resume: Prisma.ResumeVersionCreateNestedOneWithoutApplicationsInput
+  analyses?: Prisma.ResumeAnalysisCreateNestedManyWithoutApplicationInput
 }
 
 export type ApplicationUncheckedCreateWithoutCompanyInput = {
@@ -563,6 +590,7 @@ export type ApplicationUncheckedCreateWithoutCompanyInput = {
   status?: $Enums.Status
   notes?: string | null
   createdAt?: Date | string
+  analyses?: Prisma.ResumeAnalysisUncheckedCreateNestedManyWithoutApplicationInput
 }
 
 export type ApplicationCreateOrConnectWithoutCompanyInput = {
@@ -619,6 +647,7 @@ export type ApplicationCreateWithoutResumeInput = {
   notes?: string | null
   createdAt?: Date | string
   company: Prisma.CompanyCreateNestedOneWithoutApplicationsInput
+  analyses?: Prisma.ResumeAnalysisCreateNestedManyWithoutApplicationInput
 }
 
 export type ApplicationUncheckedCreateWithoutResumeInput = {
@@ -632,6 +661,7 @@ export type ApplicationUncheckedCreateWithoutResumeInput = {
   status?: $Enums.Status
   notes?: string | null
   createdAt?: Date | string
+  analyses?: Prisma.ResumeAnalysisUncheckedCreateNestedManyWithoutApplicationInput
 }
 
 export type ApplicationCreateOrConnectWithoutResumeInput = {
@@ -660,6 +690,78 @@ export type ApplicationUpdateManyWithWhereWithoutResumeInput = {
   data: Prisma.XOR<Prisma.ApplicationUpdateManyMutationInput, Prisma.ApplicationUncheckedUpdateManyWithoutResumeInput>
 }
 
+export type ApplicationCreateWithoutAnalysesInput = {
+  id?: string
+  roleTitle: string
+  jobDescription: string
+  postingUrl?: string | null
+  emailUsed: string
+  appliedDate?: Date | string
+  status?: $Enums.Status
+  notes?: string | null
+  createdAt?: Date | string
+  company: Prisma.CompanyCreateNestedOneWithoutApplicationsInput
+  resume: Prisma.ResumeVersionCreateNestedOneWithoutApplicationsInput
+}
+
+export type ApplicationUncheckedCreateWithoutAnalysesInput = {
+  id?: string
+  companyId: string
+  resumeId: string
+  roleTitle: string
+  jobDescription: string
+  postingUrl?: string | null
+  emailUsed: string
+  appliedDate?: Date | string
+  status?: $Enums.Status
+  notes?: string | null
+  createdAt?: Date | string
+}
+
+export type ApplicationCreateOrConnectWithoutAnalysesInput = {
+  where: Prisma.ApplicationWhereUniqueInput
+  create: Prisma.XOR<Prisma.ApplicationCreateWithoutAnalysesInput, Prisma.ApplicationUncheckedCreateWithoutAnalysesInput>
+}
+
+export type ApplicationUpsertWithoutAnalysesInput = {
+  update: Prisma.XOR<Prisma.ApplicationUpdateWithoutAnalysesInput, Prisma.ApplicationUncheckedUpdateWithoutAnalysesInput>
+  create: Prisma.XOR<Prisma.ApplicationCreateWithoutAnalysesInput, Prisma.ApplicationUncheckedCreateWithoutAnalysesInput>
+  where?: Prisma.ApplicationWhereInput
+}
+
+export type ApplicationUpdateToOneWithWhereWithoutAnalysesInput = {
+  where?: Prisma.ApplicationWhereInput
+  data: Prisma.XOR<Prisma.ApplicationUpdateWithoutAnalysesInput, Prisma.ApplicationUncheckedUpdateWithoutAnalysesInput>
+}
+
+export type ApplicationUpdateWithoutAnalysesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  roleTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  jobDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  postingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailUsed?: Prisma.StringFieldUpdateOperationsInput | string
+  appliedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneRequiredWithoutApplicationsNestedInput
+  resume?: Prisma.ResumeVersionUpdateOneRequiredWithoutApplicationsNestedInput
+}
+
+export type ApplicationUncheckedUpdateWithoutAnalysesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  companyId?: Prisma.StringFieldUpdateOperationsInput | string
+  resumeId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  jobDescription?: Prisma.StringFieldUpdateOperationsInput | string
+  postingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailUsed?: Prisma.StringFieldUpdateOperationsInput | string
+  appliedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ApplicationCreateManyCompanyInput = {
   id?: string
   resumeId: string
@@ -684,6 +786,7 @@ export type ApplicationUpdateWithoutCompanyInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resume?: Prisma.ResumeVersionUpdateOneRequiredWithoutApplicationsNestedInput
+  analyses?: Prisma.ResumeAnalysisUpdateManyWithoutApplicationNestedInput
 }
 
 export type ApplicationUncheckedUpdateWithoutCompanyInput = {
@@ -697,6 +800,7 @@ export type ApplicationUncheckedUpdateWithoutCompanyInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  analyses?: Prisma.ResumeAnalysisUncheckedUpdateManyWithoutApplicationNestedInput
 }
 
 export type ApplicationUncheckedUpdateManyWithoutCompanyInput = {
@@ -736,6 +840,7 @@ export type ApplicationUpdateWithoutResumeInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneRequiredWithoutApplicationsNestedInput
+  analyses?: Prisma.ResumeAnalysisUpdateManyWithoutApplicationNestedInput
 }
 
 export type ApplicationUncheckedUpdateWithoutResumeInput = {
@@ -749,6 +854,7 @@ export type ApplicationUncheckedUpdateWithoutResumeInput = {
   status?: Prisma.EnumStatusFieldUpdateOperationsInput | $Enums.Status
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  analyses?: Prisma.ResumeAnalysisUncheckedUpdateManyWithoutApplicationNestedInput
 }
 
 export type ApplicationUncheckedUpdateManyWithoutResumeInput = {
@@ -765,6 +871,35 @@ export type ApplicationUncheckedUpdateManyWithoutResumeInput = {
 }
 
 
+/**
+ * Count Type ApplicationCountOutputType
+ */
+
+export type ApplicationCountOutputType = {
+  analyses: number
+}
+
+export type ApplicationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  analyses?: boolean | ApplicationCountOutputTypeCountAnalysesArgs
+}
+
+/**
+ * ApplicationCountOutputType without action
+ */
+export type ApplicationCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ApplicationCountOutputType
+   */
+  select?: Prisma.ApplicationCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ApplicationCountOutputType without action
+ */
+export type ApplicationCountOutputTypeCountAnalysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ResumeAnalysisWhereInput
+}
+
 
 export type ApplicationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -780,6 +915,8 @@ export type ApplicationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   createdAt?: boolean
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
   resume?: boolean | Prisma.ResumeVersionDefaultArgs<ExtArgs>
+  analyses?: boolean | Prisma.Application$analysesArgs<ExtArgs>
+  _count?: boolean | Prisma.ApplicationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["application"]>
 
 export type ApplicationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -832,6 +969,8 @@ export type ApplicationOmit<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type ApplicationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
   resume?: boolean | Prisma.ResumeVersionDefaultArgs<ExtArgs>
+  analyses?: boolean | Prisma.Application$analysesArgs<ExtArgs>
+  _count?: boolean | Prisma.ApplicationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ApplicationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
@@ -847,6 +986,7 @@ export type $ApplicationPayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     company: Prisma.$CompanyPayload<ExtArgs>
     resume: Prisma.$ResumeVersionPayload<ExtArgs>
+    analyses: Prisma.$ResumeAnalysisPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1256,6 +1396,7 @@ export interface Prisma__ApplicationClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   company<T extends Prisma.CompanyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CompanyDefaultArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   resume<T extends Prisma.ResumeVersionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeVersionDefaultArgs<ExtArgs>>): Prisma.Prisma__ResumeVersionClient<runtime.Types.Result.GetResult<Prisma.$ResumeVersionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  analyses<T extends Prisma.Application$analysesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Application$analysesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1694,6 +1835,30 @@ export type ApplicationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many Applications to delete.
    */
   limit?: number
+}
+
+/**
+ * Application.analyses
+ */
+export type Application$analysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ResumeAnalysis
+   */
+  select?: Prisma.ResumeAnalysisSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ResumeAnalysis
+   */
+  omit?: Prisma.ResumeAnalysisOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeAnalysisInclude<ExtArgs> | null
+  where?: Prisma.ResumeAnalysisWhereInput
+  orderBy?: Prisma.ResumeAnalysisOrderByWithRelationInput | Prisma.ResumeAnalysisOrderByWithRelationInput[]
+  cursor?: Prisma.ResumeAnalysisWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ResumeAnalysisScalarFieldEnum | Prisma.ResumeAnalysisScalarFieldEnum[]
 }
 
 /**
