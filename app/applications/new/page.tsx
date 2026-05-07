@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ResumeVersion } from "@/generated/prisma/client";
+import type { AiSuggestion } from "@/lib/resume-demo-data";
 import NewApplicationForm from "./NewApplicationForm";
 import ResumeAnalysisResult from "./ResumeAnalysisResults";
 
@@ -19,7 +20,8 @@ export default function Page() {
 
     // state to manage the result page
     const [isAnalyzing, setIsAnalyzing] = useState(false);
-    const [isResumeAnalysisVisible, setisResumeAnalysisVisible] = useState(false)
+    const [view, setView] = useState<'form' | 'analysis' | 'editor'>('form')
+    const [targetSuggestion, setTargetSuggestion] = useState<AiSuggestion | null>(null)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [resumeAnalysisResult, setresumeAnalysisResult] = useState<any>(null); // State to hold the analysis result (if needed for future use)
     const [jobDescriptionParsingResult, setJobDescriptionParsingResult] = useState<{
@@ -73,7 +75,7 @@ export default function Page() {
             const resumeAnalysisData = await resumeAnalysisResult.json();
             setJobDescriptionParsingResult({ companyName, roleTitle });
             setresumeAnalysisResult(resumeAnalysisData)
-            setisResumeAnalysisVisible(true)
+            setView('analysis')
 
             console.log("Finish analyze the resume")
             console.log("Current job description:", jobDescriptionParsingResult);
@@ -123,7 +125,16 @@ export default function Page() {
 
     }
 
-    if (isResumeAnalysisVisible && resumeAnalysisResult && jobDescriptionParsingResult) {
+    if (view === 'editor') {
+        return (
+            <main className="min-h-screen px-4 py-10">
+                <button onClick={() => setView('analysis')}>Back to Analysis</button>
+                <p>Editor coming in step 3. Target: {targetSuggestion?.title}</p>
+            </main>
+        )
+    }
+
+    if (view === 'analysis' && resumeAnalysisResult && jobDescriptionParsingResult) {
         return (
             <main className="min-h-screen">
                 <ResumeAnalysisResult
@@ -131,7 +142,14 @@ export default function Page() {
                     jobDescriptionParsingData={jobDescriptionParsingResult}
                     resumeList={resumes}
                     defaultSelectedResumeId={selectedResumeId}
-                    onEdit={() => setisResumeAnalysisVisible(false)}
+                    onEdit={() => setView('form')}
+                    matchScore={resumeAnalysisResult.matchScore}
+                    strengthCount={resumeAnalysisResult.strengthCount}
+                    aiSuggestions={resumeAnalysisResult.aiSuggestions}
+                    onFixNow={(suggestion) => {
+                        setTargetSuggestion(suggestion)
+                        setView('editor')
+                    }}
                 />
             </main>
         )
