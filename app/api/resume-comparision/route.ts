@@ -4,6 +4,22 @@ import { NextResponse } from "next/server";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { AI_SUGGESTIONS } from "@/lib/resume-demo-data";
 import { ResumeAnalysisSchema, type ResumeAnalysis } from "@/lib/schemas/resume-analysis";
+import { appendFile, mkdir } from "node:fs/promises";
+import { join } from "node:path";
+
+async function appendClaudeAnalysisLog(record: Record<string, unknown>) {
+    try {
+        const logDirectory = join(process.cwd(), "logs");
+        await mkdir(logDirectory, { recursive: true });
+        await appendFile(
+            join(logDirectory, "claude-resume-analysis.jsonl"),
+            `${JSON.stringify(record)}\n`,
+            "utf8"
+        );
+    } catch (error) {
+        console.error("Failed to write Claude response log:", error);
+    }
+}
 
 export async function POST(req: Request) {
     try {
@@ -666,7 +682,7 @@ export async function POST(req: Request) {
         ${JSON.stringify(structuredData, null, 2)}
         `;
 
-        const response = await anthropicClient.messages.parse({
+        const response = await anthropicClient.messages.create({
             model: "claude-sonnet-4-6",
             max_tokens: 6000,
             output_config: {
@@ -680,18 +696,59 @@ export async function POST(req: Request) {
             ],
         });
 
-        // extract the parsed output from claude
+        const timestamp = new Date().toISOString();
+        const rawText = response.content
+            .filter((block) => block.type === "text")
+            .map((block) => block.text)
+            .join("\n\n");
+        const logContext = {
+            timestamp,
+            route: "resume-comparision",
+            model: response.model,
+            stopReason: response.stop_reason,
+            usage: response.usage,
+            resumeId,
+        };
+
+        await appendClaudeAnalysisLog({
+            ...logContext,
+            rawText,
+        });
+
         if (response.stop_reason == "refusal") {
             return NextResponse.json({ error: "Claude detect violation message and refuse to answer " })
         }
 
-        const parsedOutput: ResumeAnalysis | null = response.parsed_output;
+        let parsedJson: unknown;
 
-        if (parsedOutput === null) {
-            return NextResponse.json({ error: "Claude returned no parsed resume analysis" }, { status: 500 })
+        try {
+            parsedJson = JSON.parse(rawText);
+        } catch (error) {
+            await appendClaudeAnalysisLog({
+                ...logContext,
+                parseStatus: "failed",
+                error: error instanceof Error ? error.message : String(error),
+                rawText,
+            });
+
+            return NextResponse.json({ error: "Claude returned invalid JSON resume analysis" }, { status: 500 })
         }
 
-        const resumeAnalysis: ResumeAnalysis = parsedOutput!;
+        const validationResult = ResumeAnalysisSchema.safeParse(parsedJson);
+
+        if (!validationResult.success) {
+            await appendClaudeAnalysisLog({
+                ...logContext,
+                parseStatus: "failed",
+                error: validationResult.error.message,
+                issues: validationResult.error.issues,
+                rawText,
+            });
+
+            return NextResponse.json({ error: "Claude returned invalid resume analysis shape" }, { status: 500 })
+        }
+
+        const resumeAnalysis: ResumeAnalysis = validationResult.data;
 
         return NextResponse.json({
             ...resumeAnalysis,
