@@ -18,12 +18,8 @@ import {
 } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
 import {
-    AI_SUGGESTIONS,
     INITIAL_RESUME,
-    MATCH_SCORE,
-    STRENGTH_COUNT,
     getCurrentBulletForSuggestion,
-    getEditorTargetHref,
     type AiSuggestion,
 } from "@/lib/resume-demo-data"
 
@@ -37,6 +33,10 @@ type ResumeAnalysisProps = {
     resumeList: ResumeVersion[]
     defaultSelectedResumeId: string
     onEdit: () => void
+    matchScore: number
+    strengthCount: number
+    aiSuggestions: AiSuggestion[]
+    onFixNow: (suggestion: AiSuggestion) => void
 }
 
 const keywordFilters = [
@@ -128,9 +128,11 @@ function MetricChip({
 function DecisionFixCard({
     suggestion,
     index,
+    onFixNow,
 }: {
     suggestion: AiSuggestion
     index: number
+    onFixNow: (suggestion: AiSuggestion) => void
 }) {
     const tone = priorityTone(suggestion.priority)
     const currentBullet = getCurrentBulletForSuggestion(suggestion)
@@ -160,10 +162,14 @@ function DecisionFixCard({
                         </p>
                     </div>
 
-                    <Button asChild size="sm" variant="outline" className={cn("shrink-0", tone.button)}>
-                        <Link href={getEditorTargetHref(suggestion)}>
-                            Fix This Now -&gt;
-                        </Link>
+                    <Button
+                        size="sm"
+                        type="button"
+                        variant="outline"
+                        className={cn("shrink-0", tone.button)}
+                        onClick={() => onFixNow(suggestion)}
+                    >
+                        Fix This Now -&gt;
                     </Button>
                 </div>
 
@@ -245,6 +251,10 @@ const ResumeAnalysisResult = ({
     jobDescriptionParsingData,
     resumeList,
     defaultSelectedResumeId,
+    matchScore,
+    strengthCount,
+    aiSuggestions,
+    onFixNow,
 }: ResumeAnalysisProps) => {
     const {
         jobSummary,
@@ -264,10 +274,10 @@ const ResumeAnalysisResult = ({
 
     const analysisResume = resumeList.find((resume) => resume.id === defaultSelectedResumeId)
     const resumeFitSummary = "Nathan's resume has credible large-scale analytics signals, especially eBay funnel analysis, Goldman reconciliation work, and strong SQL/Python tooling. The main gap is positioning: the current bullets often read like data engineering or automation work when this Uber role needs experimentation, statistical modeling, and marketplace decision support to be obvious at first scan."
-    const totalCritical = AI_SUGGESTIONS.filter((suggestion) => suggestion.priority === "critical").length
-    const totalImportant = AI_SUGGESTIONS.filter((suggestion) => suggestion.priority === "important").length
+    const totalCritical = aiSuggestions.filter((suggestion) => suggestion.priority === "critical").length
+    const totalImportant = aiSuggestions.filter((suggestion) => suggestion.priority === "important").length
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const visibleStrengths = matchStrengths.slice(0, STRENGTH_COUNT) as any[]
+    const visibleStrengths = matchStrengths.slice(0, strengthCount) as any[]
 
     const filteredKeywords = useMemo(() => {
         if (keywordFilter === "all") {
@@ -346,7 +356,7 @@ const ResumeAnalysisResult = ({
                             </p>
                             <div className="mt-5 flex items-end gap-3">
                                 <span className="text-6xl font-semibold leading-none tracking-tight">
-                                    {MATCH_SCORE}%
+                                    {matchScore}%
                                 </span>
                                 <span className="pb-2 text-lg font-medium text-yellow-100">
                                     Moderate
@@ -379,11 +389,12 @@ const ResumeAnalysisResult = ({
                     </div>
 
                     <div className="space-y-4">
-                        {AI_SUGGESTIONS.map((suggestion, index) => (
+                        {aiSuggestions.map((suggestion, index) => (
                             <DecisionFixCard
                                 key={suggestion.id}
                                 suggestion={suggestion}
                                 index={index}
+                                onFixNow={onFixNow}
                             />
                         ))}
                     </div>
