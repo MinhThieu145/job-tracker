@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ResumeVersion } from "@/generated/prisma/client";
+import type { ResumeVersion } from "@/generated/prisma/client";
+import NewApplicationForm from "./NewApplicationForm";
+import ResumeAnalysisResult from "./ResumeAnalysisResults";
 
 export default function Page() {
 
@@ -12,8 +14,18 @@ export default function Page() {
     const [companyName, setCompanyName] = useState("");
     const [roleTitle, setRoleTitle] = useState("");
     const [emailUsed, setEmailUsed] = useState("");
-    const [resumes, setResumes] = useState([]); // State to hold the list of resumes (if needed in the future)
+    const [resumes, setResumes] = useState<ResumeVersion[]>([]); // State to hold the list of resumes (if needed in the future)
     const [selectedResumeId, setSelectedResumeId] = useState(""); // State to hold the ID of the selected resume (if needed in the future)
+
+    // state to manage the result page
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [isResumeAnalysisVisible, setisResumeAnalysisVisible] = useState(false)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [resumeAnalysisResult, setresumeAnalysisResult] = useState<any>(null); // State to hold the analysis result (if needed for future use)
+    const [jobDescriptionParsingResult, setJobDescriptionParsingResult] = useState<{
+        companyName: string
+        roleTitle: string
+    } | null>(null)
 
 
     // run once
@@ -38,36 +50,39 @@ export default function Page() {
 
 
     // handle the form submission
-    const handleSubmit = async () => {
+    const handleResumeAnalysis = async () => {
+        setIsAnalyzing(true);
+
         try {
-            const response = await fetch("/api/applications", {
+            const resumeAnalysisResult = await fetch("/api/resume-comparision", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    roleTitle: roleTitle,
-                    companyName: companyName,
-                    resumeId: selectedResumeId,
-                    jobDescription: jdText,
-                    emailUsed: emailUsed
-                })
+                body: JSON.stringify(
+                    {
+                        resumeId: selectedResumeId,
+                        jobDescription: jdText,
+                    })
             })
 
-                if (!response.ok) {
-                    throw new Error(response.statusText || "Failed to submit the application");
+            if (!resumeAnalysisResult.ok) {
+                throw new Error("Failed to analyze the resume with the job description");
+            }
 
-                }
+            const resumeAnalysisData = await resumeAnalysisResult.json();
+            setJobDescriptionParsingResult({ companyName, roleTitle });
+            setresumeAnalysisResult(resumeAnalysisData)
+            setisResumeAnalysisVisible(true)
 
-                console.log("Application submitted successfully");
-                // Optionally, you can clear the form fields after successful submission
-                setCompanyName("");
-                setRoleTitle("");
-                setEmailUsed("");
-                setSelectedResumeId("");
-                setJdText("");
+            console.log("Finish analyze the resume")
+            console.log("Current job description:", jobDescriptionParsingResult);
+            console.log("Current resume analysis:", resumeAnalysisData);
+
         } catch (error) {
             console.error("Error submitting application:", error);
+        } finally {
+            setIsAnalyzing(false);
         }
     }
 
@@ -93,8 +108,9 @@ export default function Page() {
             }
 
             console.log("Job description parsed successfully");
-            
+
             const jobDescriptionData = await response.json();
+            setJobDescriptionParsingResult(jobDescriptionData);
             setCompanyName(jobDescriptionData.companyName);
             setRoleTitle(jobDescriptionData.roleTitle);
 
@@ -106,109 +122,40 @@ export default function Page() {
 
 
     }
-        
+
+    if (isResumeAnalysisVisible && resumeAnalysisResult && jobDescriptionParsingResult) {
+        return (
+            <main className="min-h-screen">
+                <ResumeAnalysisResult
+                    resumeAnalysisData={resumeAnalysisResult}
+                    jobDescriptionParsingData={jobDescriptionParsingResult}
+                    resumeList={resumes}
+                    defaultSelectedResumeId={selectedResumeId}
+                    onEdit={() => setisResumeAnalysisVisible(false)}
+                />
+            </main>
+        )
+    }
+
     return (
-        <main className="min-h-screen">
-            <div className="max-w-4xl mx-auto px-4 py-12">
-                <div className="flex flex-col">
-                    <h1 className="text-2xl font-bold mb-4">Job Description Form</h1>
-
-                    {/* Input field for the job description */}
-                    <div className="flex flex-col">
-                        <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-700 mb-1">
-                            Job Description
-                        </label>
-
-                        <textarea
-                            id="jobDescription"
-                            placeholder="Paste the job description here..."
-                            className=" w-full p-4 rounded-lg border border-gray-300"                    
-                            value={jdText}
-                            onChange={(e) => setJdText(e.target.value)}
-                        />
-
-                        <button
-                            className="w-fit self-end bg-blue-500 hover:bg-blue-600 cursor-pointer text-white text-sm font-bold py-2 px-2 rounded-lg mt-4 "
-                            onClick={handleParseJobDescription}
-                            disabled={isParsing}
-                        >
-                            Parse Job Description
-                        </button>
-                    </div>
-
-                    {/* Separated input fields (some has been refilled from the parser) */}
-                    <div className="flex flex-col">
-                        <h2 className="text-xl font-bold mt-8 mb-4">Parsed Job Information</h2>
-                        
-                        <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-1">
-                            Company Name
-                        </label>
-                        <input
-                            id="companyName"
-                            type="text"
-                            placeholder="Company Name"
-                            className="w-full p-4 rounded-lg border border-gray-300"
-                            value={companyName}
-                            onChange={(e) => setCompanyName(e.target.value)}
-                        />
-
-                        <label htmlFor="roleTitle" className="block text-sm font-medium text-gray-700 mb-1 mt-4">
-                            Role Title
-                        </label>
-                        <input
-                            id="roleTitle"
-                            type="text"
-                            placeholder="Role Title"
-                            className="w-full p-4 rounded-lg border border-gray-300"
-                            value={roleTitle}
-                            onChange={(e) => setRoleTitle(e.target.value)}
-                        />
-
-                        <label htmlFor="emailUsed" className="block text-sm font-medium text-gray-700 mb-1 mt-4">
-                            Email Used
-                        </label>
-                        <input
-                            id="emailUsed"
-                            type="email"
-                            placeholder="Email Used"
-                            className="w-full p-4 rounded-lg border border-gray-300"
-                            value={emailUsed}
-                            onChange={(e) => setEmailUsed(e.target.value)}
-                        />
-
-                        <label htmlFor="resumeSelection" className="block text-sm font-medium text-gray-700 mb-1 mt-4">
-                            Resume Selection
-                        </label>
-                        <select
-                            value={selectedResumeId}
-                            onChange={(e) => setSelectedResumeId(e.target.value)}
-                            className=  "w-full p-3 rounded-lg border appearance-none cursor-pointer "
-                        >
-                            <option className="text-black" value="">Select a resume...</option>
-                            {
-                                resumes.map( (resume: ResumeVersion) => (
-                                    <option key={resume.id} value={resume.id} className="rounded-lg p-2 text-black">
-                                        {resume.label}
-                                    </option>
-                                )
-                                )
-                            }
-                        </select>
-
-                        <button
-                            className="w-fit self-end bg-blue-500 hover:bg-blue-600 cursor-pointer text-white text-sm font-bold py-2 px-4 rounded-lg mt-4"
-                            onClick={handleSubmit}
-                        >
-                            Submit Application
-                        </button>
-
-                    </div>
-
-
-
-                </div>
-
-            </div>
+        <main className="min-h-screen px-4 py-10">
+            <NewApplicationForm
+                jdText={jdText}
+                setJdText={setJdText}
+                companyName={companyName}
+                setCompanyName={setCompanyName}
+                roleTitle={roleTitle}
+                setRoleTitle={setRoleTitle}
+                emailUsed={emailUsed}
+                setEmailUsed={setEmailUsed}
+                resumes={resumes}
+                selectedResumeId={selectedResumeId}
+                setSelectedResumeId={setSelectedResumeId}
+                isParsing={isParsing}
+                isAnalyzing={isAnalyzing}
+                onParse={handleParseJobDescription}
+                onAnalyze={handleResumeAnalysis}
+            />
         </main>
     )
 }
