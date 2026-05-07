@@ -45,6 +45,7 @@ export async function POST(req: Request) {
 
 
         // demo result for the endpoint
+        /*
         return NextResponse.json(
             {
                 "matchScore": 62,
@@ -640,7 +641,7 @@ export async function POST(req: Request) {
         )
 
 
-
+        */
 
 
         // 3. Now we gotta feed the AI both and got the result back
