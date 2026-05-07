@@ -45,6 +45,55 @@ export async function POST(req: Request) {
         // demo result for the endpoint
         return NextResponse.json(
             {
+                "matchScore": 62,
+                "strengthCount": 3,
+                "aiSuggestions": [
+                    {
+                        "id": "sql-window-functions",
+                        "priority": "critical",
+                        "title": "Add SQL Window Functions",
+                        "why": "Directly addresses the SQL depth required by the target role.",
+                        "experienceId": "ebay",
+                        "bulletIndex": 0,
+                        "newText": "Partnered with product managers and engineers to analyze product usage patterns across 10M+ eBay shopper sessions using Spark SQL with window functions (ROW_NUMBER, LAG, PARTITION BY) for session-level funnel and retention analysis; identified 3 conversion optimization opportunities."
+                    },
+                    {
+                        "id": "ab-testing-science",
+                        "priority": "critical",
+                        "title": "Reframe A/B Testing as Statistical Science",
+                        "why": "Makes the experiment work read like statistical analysis, not only tooling.",
+                        "experienceId": "ebay",
+                        "bulletIndex": 2,
+                        "newText": "Designed and analyzed A/B experiments using hypothesis testing and statistical significance frameworks; built LLM-powered tooling to automate experiment summary generation, reducing reporting time by 75%."
+                    },
+                    {
+                        "id": "goldman-regression",
+                        "priority": "critical",
+                        "title": "Add Regression to Goldman Sachs Model",
+                        "why": "Adds a stronger modeling signal for statistical data science roles.",
+                        "experienceId": "goldman",
+                        "bulletIndex": 1,
+                        "newText": "Built payment risk classification and logistic regression models using Python and scikit-learn; applied feature engineering and statistical model evaluation achieving 78% precision identifying high-risk accounts."
+                    },
+                    {
+                        "id": "goldman-lineage-debugging",
+                        "priority": "important",
+                        "title": "Clarify Data Lineage Impact",
+                        "why": "Turns the architecture bullet into a clearer data-quality and debugging outcome.",
+                        "experienceId": "goldman",
+                        "bulletIndex": 2,
+                        "newText": "Mapped multi-source invoice processing workflows into data flow diagrams and lineage documentation, enabling faster debugging of failed reconciliations and clearer root-cause analysis across upstream data dependencies."
+                    },
+                    {
+                        "id": "medkick-pipeline-reliability",
+                        "priority": "important",
+                        "title": "Add Pipeline Reliability Signal",
+                        "why": "Shows the AWS pipeline as an operational analytics system, not just a data pull.",
+                        "experienceId": "medkick",
+                        "bulletIndex": 0,
+                        "newText": "Built AWS data pipeline for 500K+ monthly remote-care interactions with daily refresh checks and monitoring, improving reliability of patient-call analytics and enabling up-to-date operational reporting."
+                    }
+                ],
                 "jobSummary": "Uber's Marketplace Dynamics team needs an entry-level Data Scientist who can run A/B experiments, build predictive models, write complex SQL, and translate quantitative findings into stakeholder-ready insights for pricing and matching systems.",
                 "roleArchetype": {
                     "label": "Data Analyst",
