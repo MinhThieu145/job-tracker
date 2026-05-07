@@ -3,10 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
-  AI_SUGGESTIONS,
   INITIAL_RESUME,
-  MATCH_SCORE,
-  STRENGTH_COUNT,
   getBulletElementId,
   getBulletKey,
   type AiSuggestion,
@@ -17,6 +14,14 @@ type EducationField = keyof Omit<ResumeData['education'][number], 'id' | 'bullet
 type ExperienceField = keyof Omit<ResumeData['experience'][number], 'id' | 'bullets'>
 type ProjectField = keyof Omit<ResumeData['projects'][number], 'id' | 'bullets'>
 type SkillField = keyof ResumeData['skills'][number]
+
+type ResumeEditorProps = {
+  aiSuggestions: AiSuggestion[]
+  matchScore: number
+  strengthCount: number
+  initialTargetSuggestion: AiSuggestion | null
+  onBackToAnalysis: () => void
+}
 
 const EMPTY_COLLAPSE_STATE = {
   suggestions: false,
@@ -144,26 +149,37 @@ function HeaderCounter({
 }
 
 function ResumeEditorHeader({
+  matchScore,
+  strengthCount,
   criticalApplied,
   totalCritical,
   importantApplied,
   totalImportant,
   allComplete,
+  onBackToAnalysis,
   onExport,
   onSubmit,
 }: {
+  matchScore: number
+  strengthCount: number
   criticalApplied: number
   totalCritical: number
   importantApplied: number
   totalImportant: number
   allComplete: boolean
+  onBackToAnalysis: () => void
   onExport: () => void
   onSubmit: () => void
 }) {
   return (
     <header className="app-header no-print">
       <div className="header-row primary">
-        <div className="role-title">Uber &middot; Data Scientist I</div>
+        <div className="header-left">
+          <button type="button" className="header-button back-action" onClick={onBackToAnalysis}>
+            Back to Analysis
+          </button>
+          <div className="role-title">Uber &middot; Data Scientist I</div>
+        </div>
         <div className="header-actions">
           <button type="button" className="header-button" data-complete={allComplete} onClick={onExport}>
             Export PDF
@@ -174,12 +190,12 @@ function ResumeEditorHeader({
         </div>
       </div>
       <div className="header-row secondary">
-        <span className="match-score">Match: {MATCH_SCORE}%</span>
+        <span className="match-score">Match: {matchScore}%</span>
         <HeaderCounter tone="critical" applied={criticalApplied} total={totalCritical} />
         <HeaderCounter tone="important" applied={importantApplied} total={totalImportant} />
         <span className="header-counter strengths complete">
           <span className="counter-icon">{'\u2713'}</span>
-          {STRENGTH_COUNT}
+          {strengthCount}
         </span>
       </div>
     </header>
@@ -530,19 +546,26 @@ function PreviewBullets({ bullets }: { bullets: string[] }) {
   )
 }
 
-export default function ResumeEditor() {
+export default function ResumeEditor({
+  aiSuggestions,
+  matchScore,
+  strengthCount,
+  initialTargetSuggestion,
+  onBackToAnalysis,
+}: ResumeEditorProps) {
+  // TODO: Replace this fallback once parsed resume structuredData matches the editor's ResumeData shape.
   const [resume, setResume] = useState<ResumeData>(INITIAL_RESUME)
   const [appliedFixes, setAppliedFixes] = useState<Set<string>>(new Set())
   const [flashingBulletKeys, setFlashingBulletKeys] = useState<Set<string>>(new Set())
   const [targetedBulletKey, setTargetedBulletKey] = useState<string | null>(null)
   const [collapsedSections, setCollapsedSections] = useState(EMPTY_COLLAPSE_STATE)
 
-  const totalCritical = AI_SUGGESTIONS.filter((suggestion) => suggestion.priority === 'critical').length
-  const totalImportant = AI_SUGGESTIONS.filter((suggestion) => suggestion.priority === 'important').length
-  const criticalApplied = AI_SUGGESTIONS.filter(
+  const totalCritical = aiSuggestions.filter((suggestion) => suggestion.priority === 'critical').length
+  const totalImportant = aiSuggestions.filter((suggestion) => suggestion.priority === 'important').length
+  const criticalApplied = aiSuggestions.filter(
     (suggestion) => suggestion.priority === 'critical' && appliedFixes.has(suggestion.id)
   ).length
-  const importantApplied = AI_SUGGESTIONS.filter(
+  const importantApplied = aiSuggestions.filter(
     (suggestion) => suggestion.priority === 'important' && appliedFixes.has(suggestion.id)
   ).length
   const allComplete = criticalApplied === totalCritical && importantApplied === totalImportant
@@ -564,29 +587,14 @@ export default function ResumeEditor() {
   }, [])
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search)
-    const experienceId = searchParams.get('experienceId')
-    const suggestionId = searchParams.get('suggestionId')
-    const bulletIndexParam = searchParams.get('bulletIndex')
-    const bulletIndex = bulletIndexParam === null ? Number.NaN : Number(bulletIndexParam)
-
-    if (!experienceId || !suggestionId || !Number.isInteger(bulletIndex)) return
-
-    const targetSuggestion = AI_SUGGESTIONS.find(
-      (suggestion) =>
-        suggestion.id === suggestionId &&
-        suggestion.experienceId === experienceId &&
-        suggestion.bulletIndex === bulletIndex
-    )
-
-    if (!targetSuggestion) return
+    if (!initialTargetSuggestion) return
 
     const timeoutId = window.setTimeout(() => {
-      revealSuggestion(targetSuggestion)
+      revealSuggestion(initialTargetSuggestion)
     }, 0)
 
     return () => window.clearTimeout(timeoutId)
-  }, [revealSuggestion])
+  }, [initialTargetSuggestion, revealSuggestion])
 
   const toggleSection = (section: keyof typeof EMPTY_COLLAPSE_STATE) => {
     setCollapsedSections((previous) => ({
@@ -828,6 +836,13 @@ export default function ResumeEditor() {
           gap: 14px;
         }
 
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          min-width: 0;
+        }
+
         .role-title {
           color: #f8fafc;
           font-size: 14px;
@@ -894,6 +909,17 @@ export default function ResumeEditor() {
 
         .header-button.primary-action {
           background: rgba(22, 163, 74, 0.92);
+        }
+
+        .header-button.back-action {
+          border: 1px solid rgba(148, 163, 184, 0.18);
+          background: rgba(15, 23, 42, 0.72);
+          color: #cbd5e1;
+          opacity: 1;
+        }
+
+        .header-button.back-action:hover {
+          background: rgba(30, 41, 59, 0.92);
         }
 
         .header-button[data-complete="true"] {
@@ -1435,11 +1461,14 @@ export default function ResumeEditor() {
 
       <div className="resume-editor-page">
         <ResumeEditorHeader
+          matchScore={matchScore}
+          strengthCount={strengthCount}
           criticalApplied={criticalApplied}
           totalCritical={totalCritical}
           importantApplied={importantApplied}
           totalImportant={totalImportant}
           allComplete={allComplete}
+          onBackToAnalysis={onBackToAnalysis}
           onExport={handleExport}
           onSubmit={handleSubmit}
         />
@@ -1449,13 +1478,13 @@ export default function ResumeEditor() {
             <section className="editor-section">
               <SectionHeader
                 title="AI Suggestions"
-                count={AI_SUGGESTIONS.length}
+                count={aiSuggestions.length}
                 collapsed={collapsedSections.suggestions}
                 onToggle={() => toggleSection('suggestions')}
               />
               {!collapsedSections.suggestions && (
                 <SuggestionCards
-                  suggestions={AI_SUGGESTIONS}
+                  suggestions={aiSuggestions}
                   appliedFixes={appliedFixes}
                   experiences={resume.experience}
                   onSelect={scrollToSuggestion}
@@ -1530,7 +1559,7 @@ export default function ResumeEditor() {
                   <ExperienceCard
                     key={experience.id}
                     experience={experience}
-                    suggestions={AI_SUGGESTIONS}
+                    suggestions={aiSuggestions}
                     appliedFixes={appliedFixes}
                     flashingBulletKeys={flashingBulletKeys}
                     targetedBulletKey={targetedBulletKey}

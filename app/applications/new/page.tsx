@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { ResumeVersion } from "@/generated/prisma/client";
 import type { AiSuggestion } from "@/lib/resume-demo-data";
+import ResumeEditor from "@/app/resume-editor/ResumeEditor";
 import NewApplicationForm from "./NewApplicationForm";
 import ResumeAnalysisResult from "./ResumeAnalysisResults";
 
@@ -125,12 +126,15 @@ export default function Page() {
 
     }
 
-    if (view === 'editor') {
+    if (view === 'editor' && resumeAnalysisResult) {
         return (
-            <main className="min-h-screen px-4 py-10">
-                <button onClick={() => setView('analysis')}>Back to Analysis</button>
-                <p>Editor coming in step 3. Target: {targetSuggestion?.title}</p>
-            </main>
+            <ResumeEditor
+                aiSuggestions={resumeAnalysisResult.aiSuggestions}
+                matchScore={resumeAnalysisResult.matchScore}
+                strengthCount={resumeAnalysisResult.strengthCount}
+                initialTargetSuggestion={targetSuggestion}
+                onBackToAnalysis={() => setView('analysis')}
+            />
         )
     }
 
