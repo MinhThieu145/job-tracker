@@ -22,14 +22,21 @@ import {
     getCurrentBulletForSuggestion,
     type AiSuggestion,
 } from "@/lib/resume-demo-data"
+import type { ResumeAnalysis } from "@/lib/schemas/resume-analysis"
 
 import type { ResumeVersion } from "@/generated/prisma/client"
 
+type JobDescriptionParsingData = {
+    companyName: string
+    roleTitle: string
+}
+
+type TierSkill = ResumeAnalysis["techHierarchy"]["tier1"][number]
+type KeywordCoverageItem = ResumeAnalysis["keywordCoverage"][number]
+
 type ResumeAnalysisProps = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resumeAnalysisData: any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    jobDescriptionParsingData: any
+    resumeAnalysisData: ResumeAnalysis
+    jobDescriptionParsingData: JobDescriptionParsingData
     resumeList: ResumeVersion[]
     defaultSelectedResumeId: string
     onEdit: () => void
@@ -224,8 +231,7 @@ function DecisionFixCard({
 function renderTierCard(
     title: string,
     tone: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    skills: any[]
+    skills: TierSkill[]
 ) {
     return (
         <Card className="border-border/70 bg-card/60 shadow-none">
@@ -269,34 +275,29 @@ const ResumeAnalysisResult = ({
 
     const [keywordFilter, setKeywordFilter] = useState("all")
     const [isDeepAnalysisOpen, setIsDeepAnalysisOpen] = useState(false)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [selectedKeyword, setSelectedKeyword] = useState<any>(null)
+    const [selectedKeyword, setSelectedKeyword] = useState<KeywordCoverageItem | null>(null)
 
     const analysisResume = resumeList.find((resume) => resume.id === defaultSelectedResumeId)
     const resumeFitSummary = "Nathan's resume has credible large-scale analytics signals, especially eBay funnel analysis, Goldman reconciliation work, and strong SQL/Python tooling. The main gap is positioning: the current bullets often read like data engineering or automation work when this Uber role needs experimentation, statistical modeling, and marketplace decision support to be obvious at first scan."
     const totalCritical = aiSuggestions.filter((suggestion) => suggestion.priority === "critical").length
     const totalImportant = aiSuggestions.filter((suggestion) => suggestion.priority === "important").length
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const visibleStrengths = matchStrengths.slice(0, strengthCount) as any[]
+    const visibleStrengths = matchStrengths.slice(0, strengthCount)
 
-    const filteredKeywords = useMemo(() => {
+    const filteredKeywords = useMemo<KeywordCoverageItem[]>(() => {
         if (keywordFilter === "all") {
             return keywordCoverage
         }
 
         if (keywordFilter === "missing") {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return keywordCoverage.filter((item: any) => item.status === "missing")
+            return keywordCoverage.filter((item) => item.status === "missing")
         }
 
         if (keywordFilter === "buried") {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return keywordCoverage.filter((item: any) => item.status === "covered_but_buried")
+            return keywordCoverage.filter((item) => item.status === "covered_but_buried")
         }
 
-        const tier = Number(keywordFilter.replace("tier", ""))
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return keywordCoverage.filter((item: any) => item.tier === tier)
+        const tier = Number(keywordFilter.replace("tier", "")) as KeywordCoverageItem["tier"]
+        return keywordCoverage.filter((item) => item.tier === tier)
     }, [keywordCoverage, keywordFilter])
 
     return (
@@ -479,8 +480,7 @@ const ResumeAnalysisResult = ({
                             <div className="space-y-3">
                                 <h3 className="text-lg font-semibold">Responsibility hierarchy</h3>
                                 <div className="space-y-3">
-                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                                    {responsibilityHierarchy.map((item: any) => (
+                                    {responsibilityHierarchy.map((item) => (
                                         <Card key={item.rank} className="border-border/70 bg-background/30 shadow-none">
                                             <CardContent className="space-y-4 p-4">
                                                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -513,8 +513,7 @@ const ResumeAnalysisResult = ({
                                                         </Button>
                                                     </CollapsibleTrigger>
                                                     <CollapsibleContent className="mt-3 space-y-3">
-                                                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                                                        {item.bestEvidence.map((evidence: any, index: number) => (
+                                                        {item.bestEvidence.map((evidence, index) => (
                                                             <div
                                                                 key={`${evidence.company}-${index}`}
                                                                 className="rounded-lg border border-border/70 bg-muted/20 p-3"
@@ -559,8 +558,7 @@ const ResumeAnalysisResult = ({
                                 <Card className="border-border/70 bg-background/30 shadow-none">
                                     <CardContent className="space-y-4 p-4">
                                         <div className="flex flex-wrap gap-2">
-                                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                                            {filteredKeywords.map((keyword: any) => (
+                                            {filteredKeywords.map((keyword) => (
                                                 <Badge
                                                     key={`${keyword.keyword}-${keyword.tier}`}
                                                     asChild
@@ -606,8 +604,7 @@ const ResumeAnalysisResult = ({
                                                 </p>
                                                 {selectedKeyword.evidence.length > 0 ? (
                                                     <div className="mt-3 space-y-1">
-                                                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                                                        {selectedKeyword.evidence.map((evidence: any, index: number) => (
+                                                        {selectedKeyword.evidence.map((evidence, index) => (
                                                             <p
                                                                 key={`${evidence}-${index}`}
                                                                 className="text-xs leading-relaxed text-muted-foreground"
@@ -630,8 +627,7 @@ const ResumeAnalysisResult = ({
                             <div className="space-y-3">
                                 <h3 className="text-lg font-semibold">Risk assessment</h3>
                                 <div className="grid gap-3 md:grid-cols-2">
-                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                                    {riskAssessment.map((risk: any, index: number) => (
+                                    {riskAssessment.map((risk, index) => (
                                         <div
                                             key={`${risk.risk}-${index}`}
                                             className="rounded-xl border border-border/70 bg-background/30 p-4"

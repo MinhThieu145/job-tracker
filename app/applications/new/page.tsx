@@ -3,9 +3,15 @@
 import { useEffect, useState } from "react";
 import type { ResumeVersion } from "@/generated/prisma/client";
 import type { AiSuggestion } from "@/lib/resume-demo-data";
+import type { ResumeAnalysis } from "@/lib/schemas/resume-analysis";
 import ResumeEditor from "@/app/resume-editor/ResumeEditor";
 import NewApplicationForm from "./NewApplicationForm";
 import ResumeAnalysisResult from "./ResumeAnalysisResults";
+
+type ResumeAnalysisResponse = ResumeAnalysis & {
+    strengthCount: number
+    aiSuggestions: AiSuggestion[]
+}
 
 export default function Page() {
 
@@ -23,8 +29,7 @@ export default function Page() {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [view, setView] = useState<'form' | 'analysis' | 'editor'>('form')
     const [targetSuggestion, setTargetSuggestion] = useState<AiSuggestion | null>(null)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [resumeAnalysisResult, setresumeAnalysisResult] = useState<any>(null); // State to hold the analysis result (if needed for future use)
+    const [resumeAnalysisResult, setresumeAnalysisResult] = useState<ResumeAnalysisResponse | null>(null); // State to hold the analysis result (if needed for future use)
     const [jobDescriptionParsingResult, setJobDescriptionParsingResult] = useState<{
         companyName: string
         roleTitle: string
@@ -73,7 +78,7 @@ export default function Page() {
                 throw new Error("Failed to analyze the resume with the job description");
             }
 
-            const resumeAnalysisData = await resumeAnalysisResult.json();
+            const resumeAnalysisData = await resumeAnalysisResult.json() as ResumeAnalysisResponse;
             setJobDescriptionParsingResult({ companyName, roleTitle });
             setresumeAnalysisResult(resumeAnalysisData)
             setView('analysis')
