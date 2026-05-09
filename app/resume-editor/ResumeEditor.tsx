@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
-  INITIAL_RESUME,
   getBulletElementId,
   getBulletKey,
   type AiSuggestion,
@@ -16,6 +15,7 @@ type ProjectField = keyof Omit<ResumeStructuredData['projects'][number], 'id' | 
 type SkillField = keyof ResumeStructuredData['skills'][number]
 
 type ResumeEditorProps = {
+  initialResume: ResumeStructuredData
   aiSuggestions: AiSuggestion[]
   matchScore: number
   strengthCount: number
@@ -547,14 +547,14 @@ function PreviewBullets({ bullets }: { bullets: string[] }) {
 }
 
 export default function ResumeEditor({
+  initialResume,
   aiSuggestions,
   matchScore,
   strengthCount,
   initialTargetSuggestion,
   onBackToAnalysis,
 }: ResumeEditorProps) {
-  // TODO: Replace this fallback once parsed resume structuredData matches the editor's canonical shape.
-  const [resume, setResume] = useState<ResumeStructuredData>(INITIAL_RESUME)
+  const [resume, setResume] = useState<ResumeStructuredData>(initialResume)
   const [appliedFixes, setAppliedFixes] = useState<Set<string>>(new Set())
   const [flashingBulletKeys, setFlashingBulletKeys] = useState<Set<string>>(new Set())
   const [targetedBulletKey, setTargetedBulletKey] = useState<string | null>(null)

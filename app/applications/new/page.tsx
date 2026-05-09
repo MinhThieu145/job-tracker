@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import type { ResumeVersion } from "@/generated/prisma/client";
 import type { AiSuggestion } from "@/lib/resume-demo-data";
 import type { ResumeAnalysis } from "@/lib/schemas/resume-analysis";
+import {
+    ResumeStructuredDataSchema,
+    type ResumeStructuredData,
+} from "@/lib/schemas/resume-structured-data";
 import ResumeEditor from "@/app/resume-editor/ResumeEditor";
 import NewApplicationForm from "./NewApplicationForm";
 import ResumeAnalysisResult from "./ResumeAnalysisResults";
@@ -30,6 +34,7 @@ export default function Page() {
     const [view, setView] = useState<'form' | 'analysis' | 'editor'>('form')
     const [targetSuggestion, setTargetSuggestion] = useState<AiSuggestion | null>(null)
     const [resumeAnalysisResult, setresumeAnalysisResult] = useState<ResumeAnalysisResponse | null>(null); // State to hold the analysis result (if needed for future use)
+    const [selectedResumeStructuredData, setSelectedResumeStructuredData] = useState<ResumeStructuredData | null>(null)
     const [jobDescriptionParsingResult, setJobDescriptionParsingResult] = useState<{
         companyName: string
         roleTitle: string
@@ -57,9 +62,18 @@ export default function Page() {
     }, []);
 
 
+    const handleSelectedResumeChange = (resumeId: string) => {
+        setSelectedResumeId(resumeId)
+        setSelectedResumeStructuredData(null)
+        setresumeAnalysisResult(null)
+        setTargetSuggestion(null)
+    }
+
+
     // handle the form submission
     const handleResumeAnalysis = async () => {
         setIsAnalyzing(true);
+        setSelectedResumeStructuredData(null)
 
         try {
             const resumeAnalysisResult = await fetch("/api/resume-comparision", {
@@ -79,8 +93,16 @@ export default function Page() {
             }
 
             const resumeAnalysisData = await resumeAnalysisResult.json() as ResumeAnalysisResponse;
+            const selectedResume = resumes.find((resume) => resume.id === selectedResumeId)
+            const structuredDataResult = ResumeStructuredDataSchema.safeParse(selectedResume?.structuredData)
+
+            if (!structuredDataResult.success) {
+                throw new Error("Selected resume has invalid structured data")
+            }
+
             setJobDescriptionParsingResult({ companyName, roleTitle });
             setresumeAnalysisResult(resumeAnalysisData)
+            setSelectedResumeStructuredData(structuredDataResult.data)
             setView('analysis')
 
             console.log("Finish analyze the resume")
@@ -131,9 +153,10 @@ export default function Page() {
 
     }
 
-    if (view === 'editor' && resumeAnalysisResult) {
+    if (view === 'editor' && resumeAnalysisResult && selectedResumeStructuredData) {
         return (
             <ResumeEditor
+                initialResume={selectedResumeStructuredData}
                 aiSuggestions={resumeAnalysisResult.aiSuggestions}
                 matchScore={resumeAnalysisResult.matchScore}
                 strengthCount={resumeAnalysisResult.strengthCount}
@@ -143,7 +166,7 @@ export default function Page() {
         )
     }
 
-    if (view === 'analysis' && resumeAnalysisResult && jobDescriptionParsingResult) {
+    if (view === 'analysis' && resumeAnalysisResult && jobDescriptionParsingResult && selectedResumeStructuredData) {
         return (
             <main className="min-h-screen">
                 <ResumeAnalysisResult
@@ -151,6 +174,7 @@ export default function Page() {
                     jobDescriptionParsingData={jobDescriptionParsingResult}
                     resumeList={resumes}
                     defaultSelectedResumeId={selectedResumeId}
+                    resumeStructuredData={selectedResumeStructuredData}
                     onEdit={() => setView('form')}
                     matchScore={resumeAnalysisResult.matchScore}
                     strengthCount={resumeAnalysisResult.strengthCount}
@@ -177,7 +201,7 @@ export default function Page() {
                 setEmailUsed={setEmailUsed}
                 resumes={resumes}
                 selectedResumeId={selectedResumeId}
-                setSelectedResumeId={setSelectedResumeId}
+                setSelectedResumeId={handleSelectedResumeChange}
                 isParsing={isParsing}
                 isAnalyzing={isAnalyzing}
                 onParse={handleParseJobDescription}

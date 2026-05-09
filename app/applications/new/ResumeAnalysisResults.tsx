@@ -18,11 +18,10 @@ import {
 } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
 import {
-    INITIAL_RESUME,
-    getCurrentBulletForSuggestion,
     type AiSuggestion,
 } from "@/lib/resume-demo-data"
 import type { ResumeAnalysis } from "@/lib/schemas/resume-analysis"
+import type { ResumeStructuredData } from "@/lib/schemas/resume-structured-data"
 
 import type { ResumeVersion } from "@/generated/prisma/client"
 
@@ -39,6 +38,7 @@ type ResumeAnalysisProps = {
     jobDescriptionParsingData: JobDescriptionParsingData
     resumeList: ResumeVersion[]
     defaultSelectedResumeId: string
+    resumeStructuredData: ResumeStructuredData
     onEdit: () => void
     matchScore: number
     strengthCount: number
@@ -135,17 +135,20 @@ function MetricChip({
 function DecisionFixCard({
     suggestion,
     index,
+    resumeStructuredData,
     onFixNow,
 }: {
     suggestion: AiSuggestion
     index: number
+    resumeStructuredData: ResumeStructuredData
     onFixNow: (suggestion: AiSuggestion) => void
 }) {
     const tone = priorityTone(suggestion.priority)
-    const currentBullet = getCurrentBulletForSuggestion(suggestion)
-    const targetExperience = INITIAL_RESUME.experience.find(
+    const targetExperience = resumeStructuredData.experience.find(
         (experience) => experience.id === suggestion.experienceId
     )
+    const currentBullet =
+        targetExperience?.bullets[suggestion.bulletIndex] ?? "Current bullet unavailable for this resume."
 
     return (
         <Card className={cn("overflow-hidden rounded-2xl border bg-card/60 shadow-none", tone.card)}>
@@ -257,6 +260,7 @@ const ResumeAnalysisResult = ({
     jobDescriptionParsingData,
     resumeList,
     defaultSelectedResumeId,
+    resumeStructuredData,
     matchScore,
     strengthCount,
     aiSuggestions,
@@ -395,6 +399,7 @@ const ResumeAnalysisResult = ({
                                 key={suggestion.id}
                                 suggestion={suggestion}
                                 index={index}
+                                resumeStructuredData={resumeStructuredData}
                                 onFixNow={onFixNow}
                             />
                         ))}
