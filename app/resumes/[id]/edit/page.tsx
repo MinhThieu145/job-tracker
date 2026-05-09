@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import { parseResumeFile } from "@/lib/resume-file-parser";
+import type { ResumeStructuredData } from "@/lib/schemas/resume-structured-data";
 import { deleteResumeFromBucket, uploadResumeToBucket } from "@/lib/utils";
 
 export default function EditResumePage({ params }: { params: Promise<{ id: string }> }) {
@@ -14,6 +16,9 @@ export default function EditResumePage({ params }: { params: Promise<{ id: strin
     const [resumeFileName, setResumeFileName] = useState("");
     const [resumeLabel, setResumeLabel] = useState("");
     const [resumeNote, setResumeNote] = useState("");
+    const [replacementStructuredData, setReplacementStructuredData] = useState<ResumeStructuredData | null>(null);
+    const [isParsingResume, setIsParsingResume] = useState(false);
+    const [parseError, setParseError] = useState<string | null>(null);
 
 
     // we have to get the data of the resume from prisma
@@ -39,8 +44,35 @@ export default function EditResumePage({ params }: { params: Promise<{ id: strin
         fetchedResume();
     }, []);
 
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null
+        setResumeFile(file)
+        setReplacementStructuredData(null)
+        setParseError(null)
+
+        if (!file) {
+            return
+        }
+
+        try {
+            setIsParsingResume(true)
+            const structuredData = await parseResumeFile(file)
+            setReplacementStructuredData(structuredData)
+        } catch (error) {
+            console.error("Error while parsing replacement resume:", error)
+            setParseError(error instanceof Error ? error.message : "Failed to parse replacement resume")
+        } finally {
+            setIsParsingResume(false)
+        }
+    }
+
 
     const handleResumeSubmit = async () => {
+        if (resumeFile && (!replacementStructuredData || isParsingResume)) {
+            alert("Please wait for the replacement resume to finish parsing before saving.")
+            return
+        }
+
         try {
             // keep the old one in case user not update
             let newResumeFileUrl = resumeFileUrl
@@ -49,7 +81,7 @@ export default function EditResumePage({ params }: { params: Promise<{ id: strin
             // if user pick a new file (so it's not null)
             if ( resumeFile ) {
                 // 1. we have to upload that file to supabase storage
-                const { fileUrl, fileName, storagePath  } = await uploadResumeToBucket(resumeFile)
+                const { fileUrl, fileName } = await uploadResumeToBucket(resumeFile)
                 
                 newResumeFileUrl = fileUrl
                 newResumeFileName = fileName
@@ -66,9 +98,14 @@ export default function EditResumePage({ params }: { params: Promise<{ id: strin
                     label: resumeLabel,
                     notes: resumeNote,
                     fileUrl: newResumeFileUrl,
-                    fileName: newResumeFileName
+                    fileName: newResumeFileName,
+                    ...(replacementStructuredData ? { structuredData: replacementStructuredData } : {})
                 })
             });
+
+            if (!resumeSavingResponse.ok) {
+                throw new Error("API request failed to update resume")
+            }
 
             // 3. then we delete old pdf from the storage
             if (resumeFile) {
@@ -136,18 +173,25 @@ export default function EditResumePage({ params }: { params: Promise<{ id: strin
                     <input
                         type="file"
                         accept=".pdf"
-                        onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                        onChange={handleFileChange}
                         className="w-full p-4 rounded-lg border border-gray-400 cursor-pointer"
                     />
                     <p className="text-xs text-gray-400 mt-1">
                         Leave empty to keep current file. Pick a new file to replace it.
                     </p>
+                    {isParsingResume && (
+                        <p className="mt-2 text-sm text-blue-500">Parsing replacement resume...</p>
+                    )}
+                    {parseError && (
+                        <p className="mt-2 text-sm text-red-500">{parseError}</p>
+                    )}
                 </div>
 
 
                 <button
                     className="w-fit self-end bg-blue-500 hover:bg-blue-600 cursor-pointer text-white text-sm font-bold py-2 px-4 rounded-lg"
                     onClick={handleResumeSubmit}
+                    disabled={isParsingResume}
                 >
                     Save Resume
                 </button>
