@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { ResumeStructuredDataSchema } from "@/lib/schemas/resume-structured-data";
+import type { Prisma } from "@/generated/prisma/client";
 import { NextResponse } from "next/server";
 
 
@@ -28,17 +30,35 @@ export async function PATCH(
 ) {
 
     const { id } = await params
-    const { label, notes, fileUrl, fileName } = await req.json()
+    const { label, notes, fileUrl, fileName, structuredData } = await req.json()
 
     try {
+        const data: Prisma.ResumeVersionUpdateInput = {
+            label,
+            notes,
+            fileUrl,
+            fileName,
+        }
+
+        if (structuredData !== undefined) {
+            const structuredDataResult = ResumeStructuredDataSchema.safeParse(structuredData)
+
+            if (!structuredDataResult.success) {
+                return NextResponse.json(
+                    {
+                        error: "Invalid resume structuredData",
+                        issues: structuredDataResult.error.issues,
+                    },
+                    { status: 400 }
+                )
+            }
+
+            data.structuredData = structuredDataResult.data
+        }
+
         const updateResume = await prisma.resumeVersion.update({
             where: { id: id },
-            data: {
-                label: label,
-                notes: notes,
-                fileUrl: fileUrl,
-                fileName: fileName
-            }
+            data
         })
         
         return NextResponse.json( updateResume, { status: 200 } )
