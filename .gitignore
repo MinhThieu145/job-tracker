@@ -47,3 +47,6 @@ postman/
 
 # logs file
 logs/
+
+# local scripts
+scripts/local/
