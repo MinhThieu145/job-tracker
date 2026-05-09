@@ -270,6 +270,7 @@ const ResumeAnalysisResult = ({
         techHierarchy,
         responsibilityHierarchy,
         keywordCoverage,
+        criticalGaps,
         matchStrengths,
         riskAssessment,
     } = resumeAnalysisData
@@ -481,6 +482,40 @@ const ResumeAnalysisResult = ({
                             </div>
 
                             <div className="space-y-3">
+                                <h3 className="text-lg font-semibold">Critical gaps</h3>
+                                <div className="grid gap-3 md:grid-cols-2">
+                                    {criticalGaps.map((gap, index) => (
+                                        <div
+                                            key={`${gap.gap}-${index}`}
+                                            className="rounded-xl border border-red-500/20 bg-red-500/[0.04] p-4"
+                                        >
+                                            <div className="mb-2 flex items-start justify-between gap-3">
+                                                <p className="font-medium leading-snug">{gap.gap}</p>
+                                                <Badge className="border-red-500/35 bg-red-500/10 text-red-100">
+                                                    {gap.type}
+                                                </Badge>
+                                            </div>
+                                            <p className="text-sm leading-relaxed text-muted-foreground">
+                                                {gap.reason}
+                                            </p>
+                                            {gap.evidenceChecked.length > 0 ? (
+                                                <div className="mt-3 space-y-1">
+                                                    {gap.evidenceChecked.map((evidence, evidenceIndex) => (
+                                                        <p
+                                                            key={`${evidence}-${evidenceIndex}`}
+                                                            className="text-xs leading-relaxed text-muted-foreground"
+                                                        >
+                                                            {evidence}
+                                                        </p>
+                                                    ))}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
                                 <h3 className="text-lg font-semibold">Responsibility hierarchy</h3>
                                 <div className="space-y-3">
                                     {responsibilityHierarchy.map((item) => (
@@ -518,17 +553,11 @@ const ResumeAnalysisResult = ({
                                                     <CollapsibleContent className="mt-3 space-y-3">
                                                         {item.bestEvidence.map((evidence, index) => (
                                                             <div
-                                                                key={`${evidence.company}-${index}`}
+                                                                key={`${evidence}-${index}`}
                                                                 className="rounded-lg border border-border/70 bg-muted/20 p-3"
                                                             >
-                                                                <p className="text-sm font-medium">
-                                                                    {evidence.company}
-                                                                </p>
-                                                                <p className="mt-2 text-sm leading-relaxed">
-                                                                    {evidence.bullet}
-                                                                </p>
-                                                                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                                                                    {evidence.reason}
+                                                                <p className="text-sm leading-relaxed">
+                                                                    {evidence}
                                                                 </p>
                                                             </div>
                                                         ))}
