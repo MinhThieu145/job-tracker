@@ -33,6 +33,7 @@ export default function Page() {
     const [view, setView] = useState<'form' | 'analysis' | 'editor'>('form')
     const [targetSuggestion, setTargetSuggestion] = useState<AiSuggestion | null>(null)
     const [resumeAnalysisResult, setresumeAnalysisResult] = useState<ResumeAnalysisResponse | null>(null); // State to hold the analysis result (if needed for future use)
+    const [aiSuggestions, setAiSuggestions] = useState<AiSuggestion[] | null>(null)
     const [selectedResumeStructuredData, setSelectedResumeStructuredData] = useState<ResumeStructuredData | null>(null)
     const [jobDescriptionParsingResult, setJobDescriptionParsingResult] = useState<{
         companyName: string
@@ -65,6 +66,7 @@ export default function Page() {
         setSelectedResumeId(resumeId)
         setSelectedResumeStructuredData(null)
         setresumeAnalysisResult(null)
+        setAiSuggestions(null)
         setTargetSuggestion(null)
     }
 
@@ -73,25 +75,42 @@ export default function Page() {
     const handleResumeAnalysis = async () => {
         setIsAnalyzing(true);
         setSelectedResumeStructuredData(null)
+        setAiSuggestions(null)
+        setTargetSuggestion(null)
 
         try {
-            const resumeAnalysisResult = await fetch("/api/resume-comparision", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(
-                    {
-                        resumeId: selectedResumeId,
-                        jobDescription: jdText,
-                    })
+            const requestBody = JSON.stringify({
+                resumeId: selectedResumeId,
+                jobDescription: jdText,
             })
+
+            const [resumeAnalysisResult, suggestionsResult] = await Promise.all([
+                fetch("/api/resume-comparision", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: requestBody,
+                }),
+                fetch("/api/suggestions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: requestBody,
+                }),
+            ])
 
             if (!resumeAnalysisResult.ok) {
                 throw new Error("Failed to analyze the resume with the job description");
             }
 
+            if (!suggestionsResult.ok) {
+                throw new Error("Failed to generate resume suggestions");
+            }
+
             const resumeAnalysisData = await resumeAnalysisResult.json() as ResumeAnalysisResponse;
+            const suggestionsData = await suggestionsResult.json() as SuggestionsResponse;
             const selectedResume = resumes.find((resume) => resume.id === selectedResumeId)
             const structuredDataResult = ResumeStructuredDataSchema.safeParse(selectedResume?.structuredData)
 
@@ -101,12 +120,14 @@ export default function Page() {
 
             setJobDescriptionParsingResult({ companyName, roleTitle });
             setresumeAnalysisResult(resumeAnalysisData)
+            setAiSuggestions(suggestionsData.aiSuggestions)
             setSelectedResumeStructuredData(structuredDataResult.data)
             setView('analysis')
 
             console.log("Finish analyze the resume")
             console.log("Current job description:", jobDescriptionParsingResult);
             console.log("Current resume analysis:", resumeAnalysisData);
+            console.log("Current resume suggestions:", suggestionsData);
 
         } catch (error) {
             console.error("Error submitting application:", error);
@@ -152,11 +173,11 @@ export default function Page() {
 
     }
 
-    if (view === 'editor' && resumeAnalysisResult && selectedResumeStructuredData) {
+    if (view === 'editor' && resumeAnalysisResult && selectedResumeStructuredData && aiSuggestions) {
         return (
             <ResumeEditor
                 initialResume={selectedResumeStructuredData}
-                aiSuggestions={resumeAnalysisResult.aiSuggestions}
+                aiSuggestions={aiSuggestions}
                 matchScore={resumeAnalysisResult.matchScore}
                 strengthCount={resumeAnalysisResult.strengthCount}
                 initialTargetSuggestion={targetSuggestion}
@@ -165,7 +186,7 @@ export default function Page() {
         )
     }
 
-    if (view === 'analysis' && resumeAnalysisResult && jobDescriptionParsingResult && selectedResumeStructuredData) {
+    if (view === 'analysis' && resumeAnalysisResult && jobDescriptionParsingResult && selectedResumeStructuredData && aiSuggestions) {
         return (
             <main className="min-h-screen">
                 <ResumeAnalysisResult
@@ -177,7 +198,7 @@ export default function Page() {
                     onEdit={() => setView('form')}
                     matchScore={resumeAnalysisResult.matchScore}
                     strengthCount={resumeAnalysisResult.strengthCount}
-                    aiSuggestions={resumeAnalysisResult.aiSuggestions}
+                    aiSuggestions={aiSuggestions}
                     onFixNow={(suggestion) => {
                         setTargetSuggestion(suggestion)
                         setView('editor')

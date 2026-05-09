@@ -67,13 +67,8 @@ export const RESUME_ANALYSIS_DEMO: ResumeAnalysisDemoResponse = {
       "whyCore": "A/B testing is listed first among preferred qualifications and is explicitly called out as a core data science function. In a marketplace context, every pricing or matching change is validated through experiments.",
       "resumeCoverage": "partial_match",
       "bestEvidence": [
-        {
-          "company": "eBay Inc.",
-          "bullet": "Created LLM-powered A/B test analysis tool that auto-generates experiment summaries; improved workflow intelligence, reducing manual reporting time from 2 hours to 30 minutes.",
-          "reason": "Directly mentions A/B test analysis, showing hands-on exposure to experimentation workflows and automation — though framing is tool-building rather than statistical design and interpretation."
-        }
-      ],
-      "recommendedAction": "rewrite_existing_bullet"
+        "eBay Inc.: Created LLM-powered A/B test analysis tool that auto-generates experiment summaries; improved workflow intelligence, reducing manual reporting time from 2 hours to 30 minutes. Directly mentions A/B test analysis, showing hands-on exposure to experimentation workflows and automation — though framing is tool-building rather than statistical design and interpretation."
+      ]
     },
     {
       "rank": 2,
@@ -82,18 +77,9 @@ export const RESUME_ANALYSIS_DEMO: ResumeAnalysisDemoResponse = {
       "whyCore": "EDA is the foundational first step for every data science project at Uber scale; it directly feeds model development and stakeholder reporting.",
       "resumeCoverage": "strong_match",
       "bestEvidence": [
-        {
-          "company": "eBay Inc.",
-          "bullet": "Partnered with product managers and engineers to analyze product usage patterns across 10M+ eBay shopper sessions with Spark SQL; identified 3 conversion optimization opportunities through funnel analysis.",
-          "reason": "10M+ session analysis with Spark SQL and funnel analysis maps directly to large-scale EDA to find marketplace efficiency opportunities."
-        },
-        {
-          "company": "Med-kick",
-          "bullet": "Analyzed call patterns from 500K+ monthly patient care interactions using Python to identify peak demand and wait times; findings informed schedule changes that reduced average first-response time from 8 to 3 minutes.",
-          "reason": "Peak demand and wait time analysis is semantically identical to the wait-time reduction and supply-demand balancing work described in the JD."
-        }
-      ],
-      "recommendedAction": "no_action"
+        "eBay Inc.: Partnered with product managers and engineers to analyze product usage patterns across 10M+ eBay shopper sessions with Spark SQL; identified 3 conversion optimization opportunities through funnel analysis. 10M+ session analysis with Spark SQL and funnel analysis maps directly to large-scale EDA to find marketplace efficiency opportunities.",
+        "Med-kick: Analyzed call patterns from 500K+ monthly patient care interactions using Python to identify peak demand and wait times; findings informed schedule changes that reduced average first-response time from 8 to 3 minutes. Peak demand and wait time analysis is semantically identical to the wait-time reduction and supply-demand balancing work described in the JD."
+      ]
     },
     {
       "rank": 3,
@@ -102,13 +88,8 @@ export const RESUME_ANALYSIS_DEMO: ResumeAnalysisDemoResponse = {
       "whyCore": "Predictive modeling is the core data science deliverable — it directly powers Uber's pricing and matching engines.",
       "resumeCoverage": "partial_match",
       "bestEvidence": [
-        {
-          "company": "Goldman Sachs",
-          "bullet": "Built payment risk classification model using Python and scikit-learn with feature engineering, achieving 78% precision identifying high-risk accounts for automated risk scoring.",
-          "reason": "End-to-end ML model with scikit-learn, feature engineering, and precision metric — directly demonstrates model development skills even though domain is finance not marketplace."
-        }
-      ],
-      "recommendedAction": "rewrite_existing_bullet"
+        "Goldman Sachs: Built payment risk classification model using Python and scikit-learn with feature engineering, achieving 78% precision identifying high-risk accounts for automated risk scoring. End-to-end ML model with scikit-learn, feature engineering, and precision metric — directly demonstrates model development skills even though domain is finance not marketplace."
+      ]
     },
     {
       "rank": 4,
@@ -117,13 +98,8 @@ export const RESUME_ANALYSIS_DEMO: ResumeAnalysisDemoResponse = {
       "whyCore": "High-visibility reporting is how data scientists drive decisions — it's listed as a standalone core responsibility, not a nice-to-have.",
       "resumeCoverage": "strong_match",
       "bestEvidence": [
-        {
-          "company": "USF Quantitative Club",
-          "bullet": "Partnered with quantitative analysts to build Grafana dashboards tracking data freshness and pipeline health metrics; reduced manual validation time by 35% and enabled same-day issue detection.",
-          "reason": "Dashboard creation reducing manual time and enabling real-time visibility is a direct match — though the audience is internal analysts rather than Product/Ops stakeholders."
-        }
-      ],
-      "recommendedAction": "rewrite_existing_bullet"
+        "USF Quantitative Club: Partnered with quantitative analysts to build Grafana dashboards tracking data freshness and pipeline health metrics; reduced manual validation time by 35% and enabled same-day issue detection. Dashboard creation reducing manual time and enabling real-time visibility is a direct match — though the audience is internal analysts rather than Product/Ops stakeholders."
+      ]
     },
     {
       "rank": 5,
@@ -132,18 +108,9 @@ export const RESUME_ANALYSIS_DEMO: ResumeAnalysisDemoResponse = {
       "whyCore": "In a cross-functional role like this, the ability to communicate 'so what' to PMs and operations leaders is what creates actual business impact from analysis.",
       "resumeCoverage": "semantic_match",
       "bestEvidence": [
-        {
-          "company": "eBay Inc.",
-          "bullet": "Partnered with product managers and engineers to analyze product usage patterns across 10M+ eBay shopper sessions with Spark SQL; identified 3 conversion optimization opportunities through funnel analysis.",
-          "reason": "Collaboration with PMs and engineers implies translating findings into product decisions, though explicit communication framing is absent."
-        },
-        {
-          "company": "Med-kick",
-          "bullet": "Analyzed call patterns from 500K+ monthly patient care interactions using Python to identify peak demand and wait times; findings informed schedule changes that reduced average first-response time from 8 to 3 minutes.",
-          "reason": "'Findings informed schedule changes' demonstrates translating data into operational decisions — the strongest implicit communication evidence on the resume."
-        }
-      ],
-      "recommendedAction": "mention_in_bullet"
+        "eBay Inc.: Partnered with product managers and engineers to analyze product usage patterns across 10M+ eBay shopper sessions with Spark SQL; identified 3 conversion optimization opportunities through funnel analysis. Collaboration with PMs and engineers implies translating findings into product decisions, though explicit communication framing is absent.",
+        "Med-kick: Analyzed call patterns from 500K+ monthly patient care interactions using Python to identify peak demand and wait times; findings informed schedule changes that reduced average first-response time from 8 to 3 minutes. 'Findings informed schedule changes' demonstrates translating data into operational decisions — the strongest implicit communication evidence on the resume."
+      ]
     }
   ],
   "keywordCoverage": [
@@ -437,84 +404,5 @@ export const RESUME_ANALYSIS_DEMO: ResumeAnalysisDemoResponse = {
       "mitigation": "At least one bullet should explicitly state that findings were presented to or acted upon by non-technical stakeholders (PMs, ops teams, executives). The Med-kick bullet partially does this and can be strengthened."
     }
   ],
-  "recommendedNextActions": [
-    {
-      "priority": 1,
-      "action": "Rewrite the eBay A/B test bullet to foreground statistical experimentation, not just tool-building",
-      "reason": "A/B testing is the #1 core responsibility in the JD and your current framing hides the statistical work behind an LLM automation narrative. Recruiters and ATS will not score this as experimentation experience."
-    },
-    {
-      "priority": 2,
-      "action": "Add explicit hypothesis testing / statistical significance language to at least one bullet",
-      "reason": "Hypothesis testing is a basic qualification. Its complete absence is a screener risk. If you ran any significance tests at eBay or Goldman Sachs, surface the methodology explicitly."
-    },
-    {
-      "priority": 3,
-      "action": "Reframe the Med-kick demand analysis bullet to use forecasting / supply-demand language",
-      "reason": "This bullet is your closest semantic match to Uber's marketplace mission. Framing it as 'demand forecasting' or 'supply-demand analysis' rather than 'call patterns' dramatically improves relevance signaling."
-    },
-    {
-      "priority": 4,
-      "action": "Move analytical and modeling bullets above pipeline/engineering bullets within each role",
-      "reason": "The resume currently reads as a data engineering profile. For a DS role, the EDA, modeling, and insight-generation bullets should lead each experience section."
-    },
-    {
-      "priority": 5,
-      "action": "Add scikit-learn and Spark to the skills section explicitly if not already present",
-      "reason": "Both are mentioned in JD qualifications (basic and preferred respectively) and are evidenced on your resume but may not appear in your skills list for ATS parsing."
-    },
-    {
-      "priority": 6,
-      "action": "Add one sentence to the Goldman Sachs or eBay role explicitly mentioning presenting findings to non-technical stakeholders",
-      "reason": "Stakeholder communication is a preferred qualification and a standalone core responsibility. One explicit mention closes this gap without inventing experience."
-    }
-  ],
-  "strengthCount": 5,
-  "aiSuggestions": [
-    {
-      "id": "sql-window-functions",
-      "priority": "critical",
-      "title": "Add SQL Window Functions",
-      "why": "Directly addresses the SQL depth required by the target role.",
-      "experienceId": "ebay",
-      "bulletIndex": 0,
-      "newText": "Partnered with product managers and engineers to analyze product usage patterns across 10M+ eBay shopper sessions using Spark SQL with window functions (ROW_NUMBER, LAG, PARTITION BY) for session-level funnel and retention analysis; identified 3 conversion optimization opportunities."
-    },
-    {
-      "id": "ab-testing-science",
-      "priority": "critical",
-      "title": "Reframe A/B Testing as Statistical Science",
-      "why": "Makes the experiment work read like statistical analysis, not only tooling.",
-      "experienceId": "ebay",
-      "bulletIndex": 2,
-      "newText": "Designed and analyzed A/B experiments using hypothesis testing and statistical significance frameworks; built LLM-powered tooling to automate experiment summary generation, reducing reporting time by 75%."
-    },
-    {
-      "id": "goldman-regression",
-      "priority": "critical",
-      "title": "Add Regression to Goldman Sachs Model",
-      "why": "Adds a stronger modeling signal for statistical data science roles.",
-      "experienceId": "goldman",
-      "bulletIndex": 1,
-      "newText": "Built payment risk classification and logistic regression models using Python and scikit-learn; applied feature engineering and statistical model evaluation achieving 78% precision identifying high-risk accounts."
-    },
-    {
-      "id": "goldman-lineage-debugging",
-      "priority": "important",
-      "title": "Clarify Data Lineage Impact",
-      "why": "Turns the architecture bullet into a clearer data-quality and debugging outcome.",
-      "experienceId": "goldman",
-      "bulletIndex": 2,
-      "newText": "Mapped multi-source invoice processing workflows into data flow diagrams and lineage documentation, enabling faster debugging of failed reconciliations and clearer root-cause analysis across upstream data dependencies."
-    },
-    {
-      "id": "medkick-pipeline-reliability",
-      "priority": "important",
-      "title": "Add Pipeline Reliability Signal",
-      "why": "Shows the AWS pipeline as an operational analytics system, not just a data pull.",
-      "experienceId": "medkick",
-      "bulletIndex": 0,
-      "newText": "Built AWS data pipeline for 500K+ monthly remote-care interactions with daily refresh checks and monitoring, improving reliability of patient-call analytics and enabling up-to-date operational reporting."
-    }
-  ]
+  "strengthCount": 5
 }
