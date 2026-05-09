@@ -2,9 +2,11 @@ import { anthropicClient } from "@/lib/anthropic";
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { AI_SUGGESTIONS } from "@/lib/resume-demo-data";
 import { ResumeAnalysisSchema, type ResumeAnalysis } from "@/lib/schemas/resume-analysis";
-import { ResumeStructuredDataSchema } from "@/lib/schemas/resume-structured-data";
+import {
+    ResumeStructuredDataSchema,
+    type ResumeStructuredData,
+} from "@/lib/schemas/resume-structured-data";
 import { RESUME_ANALYSIS_DEMO } from "@/lib/demo/resume-analysis-demo";
 import { appendFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
@@ -21,6 +23,41 @@ async function appendClaudeAnalysisLog(record: Record<string, unknown>) {
     } catch (error) {
         console.error("Failed to write Claude response log:", error);
     }
+}
+
+function getInvalidSuggestionTargets(
+    aiSuggestions: ResumeAnalysis["aiSuggestions"],
+    structuredData: ResumeStructuredData
+) {
+    return aiSuggestions.flatMap((suggestion) => {
+        const targetExperience = structuredData.experience.find(
+            (experience) => experience.id === suggestion.experienceId
+        );
+
+        if (!targetExperience) {
+            return [{
+                suggestionId: suggestion.id,
+                experienceId: suggestion.experienceId,
+                bulletIndex: suggestion.bulletIndex,
+                reason: "experienceId does not exist on the selected resume",
+            }];
+        }
+
+        if (
+            !Number.isInteger(suggestion.bulletIndex) ||
+            suggestion.bulletIndex < 0 ||
+            suggestion.bulletIndex >= targetExperience.bullets.length
+        ) {
+            return [{
+                suggestionId: suggestion.id,
+                experienceId: suggestion.experienceId,
+                bulletIndex: suggestion.bulletIndex,
+                reason: "bulletIndex does not exist on the target experience",
+            }];
+        }
+
+        return [];
+    });
 }
 
 export async function POST(req: Request) {
@@ -88,9 +125,14 @@ export async function POST(req: Request) {
         Rules:
         - Ignore location, visa, education, degree type, and logistics.
         - Focus only on work, responsibilities, tools, skills, and business needs.
-        - Do not rewrite bullets yet.
         - Do not invent experience.
         - Use exact resume evidence when claiming a match.
+        - Generate 3 to 6 aiSuggestions, or fewer if fewer truthful high-leverage edits exist.
+        - Each aiSuggestion must target an existing resume experience bullet.
+        - aiSuggestion.experienceId must exactly match one of the provided RESUME STRUCTURED DATA experience[].id values.
+        - aiSuggestion.bulletIndex must be zero-based and must point to an existing bullet in that experience.
+        - aiSuggestion.newText must rewrite the existing bullet truthfully without inventing employers, projects, tools, metrics, or responsibilities.
+        - aiSuggestion.priority must be either "critical" or "important".
 
         JOB DESCRIPTION:
         ${jobDescription}
@@ -100,7 +142,7 @@ export async function POST(req: Request) {
         `;
 
         const response = await anthropicClient.messages.create({
-            model: "claude-sonnet-4-6",
+            model: "claude-haiku-4-5",
             max_tokens: 6000,
             output_config: {
                 format: zodOutputFormat(ResumeAnalysisSchema),
@@ -166,12 +208,29 @@ export async function POST(req: Request) {
         }
 
         const resumeAnalysis: ResumeAnalysis = validationResult.data;
+        const invalidSuggestionTargets = getInvalidSuggestionTargets(resumeAnalysis.aiSuggestions, structuredData);
+
+        if (invalidSuggestionTargets.length > 0) {
+            await appendClaudeAnalysisLog({
+                ...logContext,
+                parseStatus: "failed",
+                error: "Claude returned aiSuggestions with invalid resume targets",
+                invalidSuggestionTargets,
+                rawText,
+            });
+
+            return NextResponse.json(
+                {
+                    error: "Claude returned invalid aiSuggestion targets",
+                    invalidSuggestionTargets,
+                },
+                { status: 500 }
+            )
+        }
 
         return NextResponse.json({
             ...resumeAnalysis,
             strengthCount: resumeAnalysis.matchStrengths.length,
-            // TODO: Replace this temporary demo data with Claude-generated suggestions once the resume shape is fixed.
-            aiSuggestions: AI_SUGGESTIONS,
         }, { status: 200 });
 
     } catch (error) {
