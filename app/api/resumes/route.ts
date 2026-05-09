@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { ResumeStructuredDataSchema } from "@/lib/schemas/resume-structured-data";
 import { supabase } from "@/lib/supabase";
 import { NextResponse } from "next/server";
 
@@ -22,6 +23,17 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const { label, notes, fileName, fileUrl, isGolden, structuredData } = await req.json();
+        const structuredDataResult = ResumeStructuredDataSchema.safeParse(structuredData);
+
+        if (!structuredDataResult.success) {
+            return NextResponse.json(
+                {
+                    error: "Invalid resume structuredData",
+                    issues: structuredDataResult.error.issues,
+                },
+                { status: 400 }
+            );
+        }
 
         const newResume = await prisma.resumeVersion.create({
             data: {
@@ -30,7 +42,7 @@ export async function POST(req: Request) {
                 fileName: fileName,
                 fileUrl: fileUrl,
                 isGolden: isGolden,
-                structuredData: structuredData
+                structuredData: structuredDataResult.data
             }
         })
 

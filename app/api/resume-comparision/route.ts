@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { AI_SUGGESTIONS } from "@/lib/resume-demo-data";
 import { ResumeAnalysisSchema, type ResumeAnalysis } from "@/lib/schemas/resume-analysis";
+import { ResumeStructuredDataSchema } from "@/lib/schemas/resume-structured-data";
 import { RESUME_ANALYSIS_DEMO } from "@/lib/demo/resume-analysis-demo";
 import { appendFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
@@ -57,8 +58,19 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Missing or error parsing job description", status: 400 })
         }
 
-        const { structuredData } = resumeData;
+        const structuredDataResult = ResumeStructuredDataSchema.safeParse(resumeData.structuredData);
 
+        if (!structuredDataResult.success) {
+            return NextResponse.json(
+                {
+                    error: "Resume has invalid structuredData",
+                    issues: structuredDataResult.error.issues,
+                },
+                { status: 400 }
+            );
+        }
+
+        const structuredData = structuredDataResult.data;
 
 
         if (process.env.USE_DEMO_DATA === "true") {
