@@ -17,6 +17,18 @@ const EvidenceSchema = z
 
 const NumericTierSchema = z.union([z.literal(1), z.literal(2), z.literal(3)])
 
+export const AiSuggestionSchema = z
+  .object({
+    id: z.string(),
+    priority: z.enum(["critical", "important"]),
+    title: z.string(),
+    why: z.string(),
+    experienceId: z.string(),
+    bulletIndex: z.number().int().nonnegative(),
+    newText: z.string(),
+  })
+  .strict()
+
 export const ResumeAnalysisSchema = z
   .object({
     matchScore: z.number(),
@@ -133,7 +145,9 @@ export const ResumeAnalysisSchema = z
         })
         .strict()
     ),
+    aiSuggestions: z.array(AiSuggestionSchema).max(6),
   })
   .strict()
 
 export type ResumeAnalysis = z.infer<typeof ResumeAnalysisSchema>
+export type AiSuggestion = z.infer<typeof AiSuggestionSchema>
