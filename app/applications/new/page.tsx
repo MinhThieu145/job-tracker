@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type { ResumeVersion } from "@/generated/prisma/client";
-import type { AiSuggestion, ResumeAnalysis } from "@/lib/schemas/resume-analysis";
+import type { ResumeAnalysis } from "@/lib/schemas/resume-analysis";
+import type { AiSuggestion, SuggestionsResponse } from "@/lib/schemas/resume-suggestions";
 import {
     ResumeStructuredDataSchema,
     type ResumeStructuredData,

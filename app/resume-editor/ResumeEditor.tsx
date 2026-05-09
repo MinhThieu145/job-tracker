@@ -6,7 +6,7 @@ import {
   getBulletElementId,
   getBulletKey,
 } from '@/lib/resume-demo-data'
-import type { AiSuggestion } from '@/lib/schemas/resume-analysis'
+import type { AiSuggestion } from '@/lib/schemas/resume-suggestions'
 import type { ResumeStructuredData } from '@/lib/schemas/resume-structured-data'
 
 type EducationField = keyof Omit<ResumeStructuredData['education'][number], 'id' | 'bullets'>

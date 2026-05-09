@@ -1,5 +1,5 @@
 import type { ResumeStructuredData } from '@/lib/schemas/resume-structured-data'
-import type { AiSuggestion } from '@/lib/schemas/resume-analysis'
+import type { AiSuggestion } from '@/lib/schemas/resume-suggestions'
 
 export const MATCH_SCORE = 62
 export const STRENGTH_COUNT = 3
