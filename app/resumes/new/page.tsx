@@ -1,13 +1,12 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { parseResumeFile } from "@/lib/resume-file-parser";
+import type { ResumeStructuredData } from "@/lib/schemas/resume-structured-data";
 import { uploadResumeToBucket } from "@/lib/utils";
 import { useState } from "react"
 import { Origami } from "lucide-react";
 import { Toggle } from "@/components/ui/toggle";
-
-import type { TextItem, TextMarkedContent } from "pdfjs-dist/types/src/display/api";
-
 
 const Page = () => {
 
@@ -15,78 +14,26 @@ const Page = () => {
     const [resumeLabel, setResumeLabel] = useState("");
     const [resumeNote, setResumeNote] = useState("");
     const [resumeIsGolden, setResumeIsGolden] = useState(false);
-    const [resumeStructuredData, setresumeStructuredData] = useState(null)
+    const [resumeStructuredData, setresumeStructuredData] = useState<ResumeStructuredData | null>(null)
+    const [isParsingResume, setIsParsingResume] = useState(false)
+    const [parseError, setParseError] = useState<string | null>(null)
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
         console.log("file change event: ", e);
 
         try {
-        
-            // e.target.files is a FileList, which is array-like
-            // We use the optional chaining (?.) and [0] to get the first file
             const file = e.target.files?.[0] || null;
             setSelectedFile(file);
+            setresumeStructuredData(null)
+            setParseError(null)
 
-            // 2. convert the pdf to text
-            const convertPDFToText = async (pdfFile: File | null) => {
-                
-                // for the pdf parser
-                const pdfjs = await import('pdfjs-dist')
-                pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-
-
-                if (pdfFile) {
-                    // 2.1 Convert File to ArrayBuffer for PDF.js
-                    const arrayBuffer = await pdfFile?.arrayBuffer()
-
-                    // 2.2 Load the PDF 
-                    const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
-                    const pdf = await loadingTask.promise;
-
-                    let fullText = "";
-
-                    // 2.3 Loop through each page
-                    for (let i = 1; i <= pdf.numPages; i++) {
-                        const page = await pdf.getPage(i)
-
-                        // get the content of the page
-                        const textContentOfPage = await page.getTextContent();
-                        console.log("text content of an pdf page (log just to see how it looks like): ", textContentOfPage);
-
-                        // we get the content of each item (pls see the log to see how the text content actually looks like )
-                        const pageText = textContentOfPage.items
-                            .map((item: TextItem | TextMarkedContent) => {
-                                if ("str" in item) {
-                                    return item.str
-                                } else{
-                                    return ""
-                                }
-                            })
-                            .join(" ")
-
-                        fullText += pageText + "\n\n"
-                    }
-                    
-                    return fullText
-                }
+            if (!file) {
+                return
             }
-            
 
-            const fullPdfText = await convertPDFToText(file)
-            
-            // 3. parsed the text with Anthropic into structured JSON
-            const response = await fetch ("/api/parse-resume/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    resumeText: fullPdfText
-                })
-            })
-
-            const resumeStructuredData = await response.json()
+            setIsParsingResume(true)
+            const resumeStructuredData = await parseResumeFile(file)
 
             setresumeStructuredData(resumeStructuredData)
 
@@ -94,13 +41,16 @@ const Page = () => {
 
         } catch (error) {
             console.error("Error while parsing resume content", error);
+            setParseError(error instanceof Error ? error.message : "Failed to parse resume")
+        } finally {
+            setIsParsingResume(false)
         }
 
     };
 
     const handleResumeSubmit = async () => {
-        if (!selectedFile || !resumeLabel) {
-            alert("Please upload a resume and provide a label before saving.");
+        if (!selectedFile || !resumeLabel || !resumeStructuredData || isParsingResume) {
+            alert("Please upload a resume, wait for parsing to finish, and provide a label before saving.");
             return
         }
 
@@ -151,11 +101,19 @@ const Page = () => {
                     <Input
                         id="resumeUpload"
                         type="file"
-                        accept=".pdf, .doc, .docx"
+                        accept=".pdf"
                         className=" w-full rounded-lg border border-gray-400 text-gray-500 cursor-pointer"
                         onChange={handleFileChange}
                     />
                 </div>
+
+                {isParsingResume && (
+                    <p className="mb-6 text-sm text-blue-500">Parsing resume...</p>
+                )}
+
+                {parseError && (
+                    <p className="mb-6 text-sm text-red-500">{parseError}</p>
+                )}
 
                 <div className="mb-6">
                     <label htmlFor="resumeLabel" className="block text-sm font-medium text-gray-700 mb-1">
@@ -211,12 +169,13 @@ const Page = () => {
                 )}
 
 
-                <button
-                    className="w-fit self-end bg-blue-500 hover:bg-blue-600 cursor-pointer text-white text-sm font-bold py-2 px-4 rounded-lg"
-                    onClick={handleResumeSubmit}
-                >
-                    Save Resume
-                </button>
+                    <button
+                        className="w-fit self-end bg-blue-500 hover:bg-blue-600 cursor-pointer text-white text-sm font-bold py-2 px-4 rounded-lg"
+                        onClick={handleResumeSubmit}
+                        disabled={isParsingResume}
+                    >
+                        Save Resume
+                    </button>
 
             </div>
         </main>
