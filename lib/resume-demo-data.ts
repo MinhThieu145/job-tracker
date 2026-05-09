@@ -1,16 +1,5 @@
 import type { ResumeStructuredData } from '@/lib/schemas/resume-structured-data'
-
-export type SuggestionPriority = 'critical' | 'important'
-
-export interface AiSuggestion {
-  id: string
-  priority: SuggestionPriority
-  title: string
-  why: string
-  experienceId: string
-  bulletIndex: number
-  newText: string
-}
+import type { AiSuggestion } from '@/lib/schemas/resume-analysis'
 
 export const MATCH_SCORE = 62
 export const STRENGTH_COUNT = 3

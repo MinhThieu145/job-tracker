@@ -5,8 +5,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   getBulletElementId,
   getBulletKey,
-  type AiSuggestion,
 } from '@/lib/resume-demo-data'
+import type { AiSuggestion } from '@/lib/schemas/resume-analysis'
 import type { ResumeStructuredData } from '@/lib/schemas/resume-structured-data'
 
 type EducationField = keyof Omit<ResumeStructuredData['education'][number], 'id' | 'bullets'>

@@ -1,9 +1,7 @@
-import type { AiSuggestion } from "@/lib/resume-demo-data"
 import type { ResumeAnalysis } from "@/lib/schemas/resume-analysis"
 
 export type ResumeAnalysisDemoResponse = ResumeAnalysis & {
   strengthCount: number
-  aiSuggestions: AiSuggestion[]
 }
 
 export const RESUME_ANALYSIS_DEMO: ResumeAnalysisDemoResponse = {

@@ -17,10 +17,7 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
-import {
-    type AiSuggestion,
-} from "@/lib/resume-demo-data"
-import type { ResumeAnalysis } from "@/lib/schemas/resume-analysis"
+import type { AiSuggestion, ResumeAnalysis } from "@/lib/schemas/resume-analysis"
 import type { ResumeStructuredData } from "@/lib/schemas/resume-structured-data"
 
 import type { ResumeVersion } from "@/generated/prisma/client"

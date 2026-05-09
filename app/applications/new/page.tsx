@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ResumeVersion } from "@/generated/prisma/client";
-import type { AiSuggestion } from "@/lib/resume-demo-data";
-import type { ResumeAnalysis } from "@/lib/schemas/resume-analysis";
+import type { AiSuggestion, ResumeAnalysis } from "@/lib/schemas/resume-analysis";
 import {
     ResumeStructuredDataSchema,
     type ResumeStructuredData,
@@ -14,7 +13,6 @@ import ResumeAnalysisResult from "./ResumeAnalysisResults";
 
 type ResumeAnalysisResponse = ResumeAnalysis & {
     strengthCount: number
-    aiSuggestions: AiSuggestion[]
 }
 
 export default function Page() {
