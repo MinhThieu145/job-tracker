@@ -84,7 +84,7 @@ export default function Page() {
                 jobDescription: jdText,
             })
 
-            const [resumeAnalysisResult, suggestionsResult] = await Promise.all([
+            const [analysisResponse, suggestionsResponse] = await Promise.all([
                 fetch("/api/resume-comparision", {
                     method: "POST",
                     headers: {
@@ -101,16 +101,16 @@ export default function Page() {
                 }),
             ])
 
-            if (!resumeAnalysisResult.ok) {
+            if (!analysisResponse.ok) {
                 throw new Error("Failed to analyze the resume with the job description");
             }
 
-            if (!suggestionsResult.ok) {
+            if (!suggestionsResponse.ok) {
                 throw new Error("Failed to generate resume suggestions");
             }
 
-            const resumeAnalysisData = await resumeAnalysisResult.json() as ResumeAnalysisResponse;
-            const suggestionsData = await suggestionsResult.json() as SuggestionsResponse;
+            const analysisData = await analysisResponse.json() as ResumeAnalysisResponse;
+            const suggestionsPayload = await suggestionsResponse.json() as SuggestionsResponse;
             const selectedResume = resumes.find((resume) => resume.id === selectedResumeId)
             const structuredDataResult = ResumeStructuredDataSchema.safeParse(selectedResume?.structuredData)
 
@@ -119,15 +119,15 @@ export default function Page() {
             }
 
             setJobDescriptionParsingResult({ companyName, roleTitle });
-            setresumeAnalysisResult(resumeAnalysisData)
-            setAiSuggestions(suggestionsData.aiSuggestions)
+            setresumeAnalysisResult(analysisData)
+            setAiSuggestions(suggestionsPayload.aiSuggestions)
             setSelectedResumeStructuredData(structuredDataResult.data)
             setView('analysis')
 
             console.log("Finish analyze the resume")
             console.log("Current job description:", jobDescriptionParsingResult);
-            console.log("Current resume analysis:", resumeAnalysisData);
-            console.log("Current resume suggestions:", suggestionsData);
+            console.log("Current resume analysis:", analysisData);
+            console.log("Current resume suggestions:", suggestionsPayload);
 
         } catch (error) {
             console.error("Error submitting application:", error);
