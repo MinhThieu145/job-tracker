@@ -1,38 +1,4 @@
-export interface ResumeData {
-  name: string
-  contact: {
-    email: string
-    phone: string
-    linkedin: string
-  }
-  education: {
-    id: string
-    institution: string
-    location: string
-    degree: string
-    gpa: string
-    dates: string
-    bullets: string[]
-  }[]
-  experience: {
-    id: string
-    company: string
-    role: string
-    dates: string
-    location: string
-    bullets: string[]
-  }[]
-  projects: {
-    id: string
-    name: string
-    technologies: string
-    bullets: string[]
-  }[]
-  skills: {
-    category: string
-    items: string
-  }[]
-}
+import type { ResumeStructuredData } from '@/lib/schemas/resume-structured-data'
 
 export type SuggestionPriority = 'critical' | 'important'
 
@@ -49,7 +15,8 @@ export interface AiSuggestion {
 export const MATCH_SCORE = 62
 export const STRENGTH_COUNT = 3
 
-export const INITIAL_RESUME: ResumeData = {
+export const INITIAL_RESUME: ResumeStructuredData = {
+  schemaVersion: 1,
   name: 'Nathan Nguyen',
   contact: {
     email: 'nathannguyen1402@gmail.com',

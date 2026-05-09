@@ -7,13 +7,13 @@ import {
   getBulletElementId,
   getBulletKey,
   type AiSuggestion,
-  type ResumeData,
 } from '@/lib/resume-demo-data'
+import type { ResumeStructuredData } from '@/lib/schemas/resume-structured-data'
 
-type EducationField = keyof Omit<ResumeData['education'][number], 'id' | 'bullets'>
-type ExperienceField = keyof Omit<ResumeData['experience'][number], 'id' | 'bullets'>
-type ProjectField = keyof Omit<ResumeData['projects'][number], 'id' | 'bullets'>
-type SkillField = keyof ResumeData['skills'][number]
+type EducationField = keyof Omit<ResumeStructuredData['education'][number], 'id' | 'bullets'>
+type ExperienceField = keyof Omit<ResumeStructuredData['experience'][number], 'id' | 'bullets'>
+type ProjectField = keyof Omit<ResumeStructuredData['projects'][number], 'id' | 'bullets'>
+type SkillField = keyof ResumeStructuredData['skills'][number]
 
 type ResumeEditorProps = {
   aiSuggestions: AiSuggestion[]
@@ -95,7 +95,7 @@ function SuggestionCards({
 }: {
   suggestions: AiSuggestion[]
   appliedFixes: Set<string>
-  experiences: ResumeData['experience']
+  experiences: ResumeStructuredData['experience']
   onSelect: (suggestion: AiSuggestion) => void
 }) {
   return (
@@ -264,7 +264,7 @@ function EducationCard({
   onBulletDelete,
   onBulletAdd,
 }: {
-  education: ResumeData['education'][number]
+  education: ResumeStructuredData['education'][number]
   onFieldChange: (field: EducationField, value: string) => void
   onBulletChange: (index: number, value: string) => void
   onBulletDelete: (index: number) => void
@@ -316,7 +316,7 @@ function ExperienceCard({
   onBulletAdd,
   onSuggestionApply,
 }: {
-  experience: ResumeData['experience'][number]
+  experience: ResumeStructuredData['experience'][number]
   suggestions: AiSuggestion[]
   appliedFixes: Set<string>
   flashingBulletKeys: Set<string>
@@ -386,7 +386,7 @@ function ProjectCard({
   onBulletDelete,
   onBulletAdd,
 }: {
-  project: ResumeData['projects'][number]
+  project: ResumeStructuredData['projects'][number]
   onFieldChange: (field: ProjectField, value: string) => void
   onBulletChange: (index: number, value: string) => void
   onBulletDelete: (index: number) => void
@@ -431,7 +431,7 @@ function SkillCard({
   skill,
   onFieldChange,
 }: {
-  skill: ResumeData['skills'][number]
+  skill: ResumeStructuredData['skills'][number]
   onFieldChange: (field: SkillField, value: string) => void
 }) {
   return (
@@ -449,7 +449,7 @@ function SkillCard({
   )
 }
 
-function ResumePreview({ resume }: { resume: ResumeData }) {
+function ResumePreview({ resume }: { resume: ResumeStructuredData }) {
   return (
     <div className="resume-page">
       <header className="resume-header-preview">
@@ -553,8 +553,8 @@ export default function ResumeEditor({
   initialTargetSuggestion,
   onBackToAnalysis,
 }: ResumeEditorProps) {
-  // TODO: Replace this fallback once parsed resume structuredData matches the editor's ResumeData shape.
-  const [resume, setResume] = useState<ResumeData>(INITIAL_RESUME)
+  // TODO: Replace this fallback once parsed resume structuredData matches the editor's canonical shape.
+  const [resume, setResume] = useState<ResumeStructuredData>(INITIAL_RESUME)
   const [appliedFixes, setAppliedFixes] = useState<Set<string>>(new Set())
   const [flashingBulletKeys, setFlashingBulletKeys] = useState<Set<string>>(new Set())
   const [targetedBulletKey, setTargetedBulletKey] = useState<string | null>(null)
@@ -603,7 +603,7 @@ export default function ResumeEditor({
     }))
   }
 
-  const updateContact = (field: keyof ResumeData['contact'], value: string) => {
+  const updateContact = (field: keyof ResumeStructuredData['contact'], value: string) => {
     setResume((previous) => ({
       ...previous,
       contact: {
