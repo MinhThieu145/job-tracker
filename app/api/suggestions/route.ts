@@ -103,6 +103,8 @@ export async function POST(req: Request) {
         }
 
         const structuredData = structuredDataResult.data
+        const validExperienceIds = structuredData.experience.map((experience) => experience.id)
+        const validExperienceIdSet = new Set(validExperienceIds)
 
         if (process.env.USE_DEMO_DATA === "true") {
             return NextResponse.json({ aiSuggestions: AI_SUGGESTIONS }, { status: 200 })
@@ -115,6 +117,10 @@ export async function POST(req: Request) {
 
         Rules:
         - Only suggest edits to existing experience bullets.
+        - Only generate suggestions targeting experience entries.
+        - Valid experienceId values are ONLY these exact strings: ${validExperienceIds.join(", ")}.
+        - Do not use any other experienceId value. Do not target projects, education, or skills.
+        - Each bulletIndex must be 0 or a positive integer less than the bullet count for that experience.
         - Focus on the highest-impact truthful changes for this role.
         - Do not invent employers, projects, tools, metrics, responsibilities, or outcomes.
         - If a gap cannot be fixed truthfully from the resume evidence, do not create a suggestion for it.
@@ -199,7 +205,32 @@ export async function POST(req: Request) {
         }
 
         const suggestions = validationResult.data
-        const invalidSuggestionTargets = getInvalidSuggestionTargets(suggestions.aiSuggestions, structuredData)
+        const filteredSuggestions = suggestions.aiSuggestions.filter((suggestion) => {
+            if (!validExperienceIdSet.has(suggestion.experienceId)) {
+                console.warn(
+                    `[suggestions] Dropping suggestion ${suggestion.id} - experienceId "${suggestion.experienceId}" is not a valid experience entry`
+                )
+                return false
+            }
+
+            return true
+        })
+
+        if (filteredSuggestions.length === 0) {
+            await appendClaudeSuggestionsLog({
+                ...logContext,
+                parseStatus: "failed",
+                error: "Claude returned no valid experience-targeted suggestions",
+                rawText,
+            })
+
+            return NextResponse.json(
+                { error: "Claude returned no valid experience-targeted suggestions" },
+                { status: 500 }
+            )
+        }
+
+        const invalidSuggestionTargets = getInvalidSuggestionTargets(filteredSuggestions, structuredData)
 
         if (invalidSuggestionTargets.length > 0) {
             await appendClaudeSuggestionsLog({
@@ -219,7 +250,7 @@ export async function POST(req: Request) {
             )
         }
 
-        return NextResponse.json(suggestions, { status: 200 })
+        return NextResponse.json({ aiSuggestions: filteredSuggestions }, { status: 200 })
     } catch (error) {
         console.error("Error generating resume suggestions:", error)
         return NextResponse.json({ error: "Failed to generate resume suggestions" }, { status: 500 })
