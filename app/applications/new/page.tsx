@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type SetStateAction } from "react";
 import type { ResumeVersion } from "@/generated/prisma/client";
 import type { ResumeAnalysis } from "@/lib/schemas/resume-analysis";
 import type { AiSuggestion, SuggestionsResponse } from "@/lib/schemas/resume-suggestions";
@@ -8,7 +8,7 @@ import {
     ResumeStructuredDataSchema,
     type ResumeStructuredData,
 } from "@/lib/schemas/resume-structured-data";
-import ResumeEditor from "@/app/resume-editor/ResumeEditor";
+import ResumeEditor from "./ResumeEditor";
 import NewApplicationForm from "./NewApplicationForm";
 import ResumeAnalysisResult from "./ResumeAnalysisResults";
 
@@ -35,6 +35,8 @@ export default function Page() {
     const [resumeAnalysisResult, setresumeAnalysisResult] = useState<ResumeAnalysisResponse | null>(null); // State to hold the analysis result (if needed for future use)
     const [aiSuggestions, setAiSuggestions] = useState<AiSuggestion[] | null>(null)
     const [selectedResumeStructuredData, setSelectedResumeStructuredData] = useState<ResumeStructuredData | null>(null)
+    const [draftResume, setDraftResume] = useState<ResumeStructuredData | null>(null)
+    const [appliedFixes, setAppliedFixes] = useState<Set<string>>(new Set())
     const [jobDescriptionParsingResult, setJobDescriptionParsingResult] = useState<{
         companyName: string
         roleTitle: string
@@ -65,9 +67,21 @@ export default function Page() {
     const handleSelectedResumeChange = (resumeId: string) => {
         setSelectedResumeId(resumeId)
         setSelectedResumeStructuredData(null)
+        setDraftResume(null)
+        setAppliedFixes(new Set())
         setresumeAnalysisResult(null)
         setAiSuggestions(null)
         setTargetSuggestion(null)
+    }
+
+    const handleDraftResumeChange = (action: SetStateAction<ResumeStructuredData>) => {
+        setDraftResume((previous) => {
+            if (!previous) {
+                return previous
+            }
+
+            return typeof action === "function" ? action(previous) : action
+        })
     }
 
 
@@ -75,6 +89,8 @@ export default function Page() {
     const handleResumeAnalysis = async () => {
         setIsAnalyzing(true);
         setSelectedResumeStructuredData(null)
+        setDraftResume(null)
+        setAppliedFixes(new Set())
         setAiSuggestions(null)
         setTargetSuggestion(null)
 
@@ -122,6 +138,7 @@ export default function Page() {
             setresumeAnalysisResult(analysisData)
             setAiSuggestions(suggestionsPayload.aiSuggestions)
             setSelectedResumeStructuredData(structuredDataResult.data)
+            setDraftResume(structuredDataResult.data)
             setView('analysis')
 
             console.log("Finish analyze the resume")
@@ -173,10 +190,13 @@ export default function Page() {
 
     }
 
-    if (view === 'editor' && resumeAnalysisResult && selectedResumeStructuredData && aiSuggestions) {
+    if (view === 'editor' && resumeAnalysisResult && selectedResumeStructuredData && draftResume && aiSuggestions) {
         return (
             <ResumeEditor
-                initialResume={selectedResumeStructuredData}
+                resume={draftResume}
+                onResumeChange={handleDraftResumeChange}
+                appliedFixes={appliedFixes}
+                onAppliedFixesChange={setAppliedFixes}
                 aiSuggestions={aiSuggestions}
                 matchScore={resumeAnalysisResult.matchScore}
                 strengthCount={resumeAnalysisResult.strengthCount}
@@ -186,7 +206,7 @@ export default function Page() {
         )
     }
 
-    if (view === 'analysis' && resumeAnalysisResult && jobDescriptionParsingResult && selectedResumeStructuredData && aiSuggestions) {
+    if (view === 'analysis' && resumeAnalysisResult && jobDescriptionParsingResult && selectedResumeStructuredData && draftResume && aiSuggestions) {
         return (
             <main className="min-h-screen">
                 <ResumeAnalysisResult
@@ -194,7 +214,7 @@ export default function Page() {
                     jobDescriptionParsingData={jobDescriptionParsingResult}
                     resumeList={resumes}
                     defaultSelectedResumeId={selectedResumeId}
-                    resumeStructuredData={selectedResumeStructuredData}
+                    resumeStructuredData={draftResume}
                     onEdit={() => setView('form')}
                     matchScore={resumeAnalysisResult.matchScore}
                     strengthCount={resumeAnalysisResult.strengthCount}

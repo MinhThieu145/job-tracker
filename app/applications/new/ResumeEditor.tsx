@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react'
 
 import {
   getBulletElementId,
@@ -15,7 +15,10 @@ type ProjectField = keyof Omit<ResumeStructuredData['projects'][number], 'id' | 
 type SkillField = keyof ResumeStructuredData['skills'][number]
 
 type ResumeEditorProps = {
-  initialResume: ResumeStructuredData
+  resume: ResumeStructuredData
+  onResumeChange: Dispatch<SetStateAction<ResumeStructuredData>>
+  appliedFixes: Set<string>
+  onAppliedFixesChange: Dispatch<SetStateAction<Set<string>>>
   aiSuggestions: AiSuggestion[]
   matchScore: number
   strengthCount: number
@@ -547,15 +550,16 @@ function PreviewBullets({ bullets }: { bullets: string[] }) {
 }
 
 export default function ResumeEditor({
-  initialResume,
+  resume,
+  onResumeChange,
+  appliedFixes,
+  onAppliedFixesChange,
   aiSuggestions,
   matchScore,
   strengthCount,
   initialTargetSuggestion,
   onBackToAnalysis,
 }: ResumeEditorProps) {
-  const [resume, setResume] = useState<ResumeStructuredData>(initialResume)
-  const [appliedFixes, setAppliedFixes] = useState<Set<string>>(new Set())
   const [flashingBulletKeys, setFlashingBulletKeys] = useState<Set<string>>(new Set())
   const [targetedBulletKey, setTargetedBulletKey] = useState<string | null>(null)
   const [collapsedSections, setCollapsedSections] = useState(EMPTY_COLLAPSE_STATE)
@@ -604,7 +608,7 @@ export default function ResumeEditor({
   }
 
   const updateContact = (field: keyof ResumeStructuredData['contact'], value: string) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       contact: {
         ...previous.contact,
@@ -614,7 +618,7 @@ export default function ResumeEditor({
   }
 
   const updateEducationField = (id: string, field: EducationField, value: string) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       education: previous.education.map((education) =>
         education.id === id ? { ...education, [field]: value } : education
@@ -623,7 +627,7 @@ export default function ResumeEditor({
   }
 
   const updateEducationBullet = (id: string, bulletIndex: number, value: string) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       education: previous.education.map((education) =>
         education.id === id
@@ -637,7 +641,7 @@ export default function ResumeEditor({
   }
 
   const deleteEducationBullet = (id: string, bulletIndex: number) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       education: previous.education.map((education) =>
         education.id === id
@@ -648,7 +652,7 @@ export default function ResumeEditor({
   }
 
   const addEducationBullet = (id: string) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       education: previous.education.map((education) =>
         education.id === id ? { ...education, bullets: [...education.bullets, ''] } : education
@@ -657,7 +661,7 @@ export default function ResumeEditor({
   }
 
   const updateExperienceField = (id: string, field: ExperienceField, value: string) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       experience: previous.experience.map((experience) =>
         experience.id === id ? { ...experience, [field]: value } : experience
@@ -666,7 +670,7 @@ export default function ResumeEditor({
   }
 
   const updateExperienceBullet = (id: string, bulletIndex: number, value: string) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       experience: previous.experience.map((experience) =>
         experience.id === id
@@ -680,7 +684,7 @@ export default function ResumeEditor({
   }
 
   const deleteExperienceBullet = (id: string, bulletIndex: number) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       experience: previous.experience.map((experience) =>
         experience.id === id
@@ -691,7 +695,7 @@ export default function ResumeEditor({
   }
 
   const addExperienceBullet = (id: string) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       experience: previous.experience.map((experience) =>
         experience.id === id ? { ...experience, bullets: [...experience.bullets, ''] } : experience
@@ -700,14 +704,14 @@ export default function ResumeEditor({
   }
 
   const updateProjectField = (id: string, field: ProjectField, value: string) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       projects: previous.projects.map((project) => (project.id === id ? { ...project, [field]: value } : project)),
     }))
   }
 
   const updateProjectBullet = (id: string, bulletIndex: number, value: string) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       projects: previous.projects.map((project) =>
         project.id === id
@@ -721,7 +725,7 @@ export default function ResumeEditor({
   }
 
   const deleteProjectBullet = (id: string, bulletIndex: number) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       projects: previous.projects.map((project) =>
         project.id === id ? { ...project, bullets: project.bullets.filter((_, index) => index !== bulletIndex) } : project
@@ -730,7 +734,7 @@ export default function ResumeEditor({
   }
 
   const addProjectBullet = (id: string) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       projects: previous.projects.map((project) =>
         project.id === id ? { ...project, bullets: [...project.bullets, ''] } : project
@@ -739,7 +743,7 @@ export default function ResumeEditor({
   }
 
   const updateSkillField = (skillIndex: number, field: SkillField, value: string) => {
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       skills: previous.skills.map((skill, index) => (index === skillIndex ? { ...skill, [field]: value } : skill)),
     }))
@@ -751,7 +755,7 @@ export default function ResumeEditor({
 
     if (!targetExperience || !targetExperience.bullets[suggestion.bulletIndex]) return
 
-    setResume((previous) => ({
+    onResumeChange((previous) => ({
       ...previous,
       experience: previous.experience.map((experience) =>
         experience.id === suggestion.experienceId
@@ -764,7 +768,7 @@ export default function ResumeEditor({
           : experience
       ),
     }))
-    setAppliedFixes((previous) => new Set([...previous, suggestion.id]))
+    onAppliedFixesChange((previous) => new Set([...previous, suggestion.id]))
     setTargetedBulletKey(null)
     setFlashingBulletKeys((previous) => new Set([...previous, bulletKey]))
     window.setTimeout(() => {
@@ -1503,7 +1507,7 @@ export default function ResumeEditor({
                   <div className="card-grid two-columns">
                     <AutoResizeTextarea
                       value={resume.name}
-                      onChange={(value) => setResume((previous) => ({ ...previous, name: value }))}
+                      onChange={(value) => onResumeChange((previous) => ({ ...previous, name: value }))}
                       label="Name"
                       className="field-strong"
                     />
