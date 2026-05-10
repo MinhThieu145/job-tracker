@@ -19,6 +19,12 @@ type ResumeEditorProps = {
   onResumeChange: Dispatch<SetStateAction<ResumeStructuredData>>
   appliedFixes: Set<string>
   onAppliedFixesChange: Dispatch<SetStateAction<Set<string>>>
+  onSaveTailoredResume: () => Promise<void>
+  onSubmitApplication: () => Promise<void>
+  isSavingTailoredResume: boolean
+  isDraftDirty: boolean
+  savedTailoredResumeId: string | null
+  tailoredResumeSaveError: string | null
   aiSuggestions: AiSuggestion[]
   matchScore: number
   strengthCount: number
@@ -160,8 +166,13 @@ function ResumeEditorHeader({
   totalImportant,
   allComplete,
   onBackToAnalysis,
+  onSaveTailoredResume,
   onExport,
   onSubmit,
+  isSavingTailoredResume,
+  isDraftDirty,
+  savedTailoredResumeId,
+  tailoredResumeSaveError,
 }: {
   matchScore: number
   strengthCount: number
@@ -171,9 +182,20 @@ function ResumeEditorHeader({
   totalImportant: number
   allComplete: boolean
   onBackToAnalysis: () => void
+  onSaveTailoredResume: () => void
   onExport: () => void
   onSubmit: () => void
+  isSavingTailoredResume: boolean
+  isDraftDirty: boolean
+  savedTailoredResumeId: string | null
+  tailoredResumeSaveError: string | null
 }) {
+  const saveLabel = isSavingTailoredResume
+    ? 'Saving...'
+    : savedTailoredResumeId && !isDraftDirty
+      ? 'Tailored Resume Saved'
+      : 'Save Tailored Resume'
+
   return (
     <header className="app-header no-print">
       <div className="header-row primary">
@@ -184,14 +206,34 @@ function ResumeEditorHeader({
           <div className="role-title">Uber &middot; Data Scientist I</div>
         </div>
         <div className="header-actions">
+          <button
+            type="button"
+            className="header-button"
+            data-complete={Boolean(savedTailoredResumeId) && !isDraftDirty}
+            disabled={isSavingTailoredResume}
+            onClick={onSaveTailoredResume}
+          >
+            {saveLabel}
+          </button>
           <button type="button" className="header-button" data-complete={allComplete} onClick={onExport}>
             Export PDF
           </button>
-          <button type="button" className="header-button primary-action" data-complete={allComplete} onClick={onSubmit}>
+          <button
+            type="button"
+            className="header-button primary-action"
+            data-complete={allComplete}
+            disabled={isSavingTailoredResume}
+            onClick={onSubmit}
+          >
             Submit Application
           </button>
         </div>
       </div>
+      {tailoredResumeSaveError ? (
+        <div className="header-row save-error">
+          <span>{tailoredResumeSaveError}</span>
+        </div>
+      ) : null}
       <div className="header-row secondary">
         <span className="match-score">Match: {matchScore}%</span>
         <HeaderCounter tone="critical" applied={criticalApplied} total={totalCritical} />
@@ -554,6 +596,12 @@ export default function ResumeEditor({
   onResumeChange,
   appliedFixes,
   onAppliedFixesChange,
+  onSaveTailoredResume,
+  onSubmitApplication,
+  isSavingTailoredResume,
+  isDraftDirty,
+  savedTailoredResumeId,
+  tailoredResumeSaveError,
   aiSuggestions,
   matchScore,
   strengthCount,
@@ -788,10 +836,6 @@ export default function ResumeEditor({
     window.print()
   }
 
-  const handleSubmit = () => {
-    console.log('Submitting application demo data:', resume)
-  }
-
   return (
     <>
       <style>{`
@@ -816,7 +860,7 @@ export default function ResumeEditor({
           position: sticky;
           top: 0;
           z-index: 20;
-          height: 68px;
+          min-height: 68px;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -838,6 +882,13 @@ export default function ResumeEditor({
         .header-row.secondary {
           justify-content: flex-start;
           gap: 14px;
+        }
+
+        .header-row.save-error {
+          justify-content: flex-end;
+          color: #fecaca;
+          font-size: 11px;
+          font-weight: 700;
         }
 
         .header-left {
@@ -932,6 +983,12 @@ export default function ResumeEditor({
 
         .header-button:hover {
           filter: brightness(1.08);
+        }
+
+        .header-button:disabled {
+          cursor: not-allowed;
+          filter: none;
+          opacity: 0.45;
         }
 
         .workspace {
@@ -1473,8 +1530,13 @@ export default function ResumeEditor({
           totalImportant={totalImportant}
           allComplete={allComplete}
           onBackToAnalysis={onBackToAnalysis}
+          onSaveTailoredResume={onSaveTailoredResume}
           onExport={handleExport}
-          onSubmit={handleSubmit}
+          onSubmit={onSubmitApplication}
+          isSavingTailoredResume={isSavingTailoredResume}
+          isDraftDirty={isDraftDirty}
+          savedTailoredResumeId={savedTailoredResumeId}
+          tailoredResumeSaveError={tailoredResumeSaveError}
         />
 
         <main className="workspace">

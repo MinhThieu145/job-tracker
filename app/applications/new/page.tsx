@@ -37,6 +37,10 @@ export default function Page() {
     const [selectedResumeStructuredData, setSelectedResumeStructuredData] = useState<ResumeStructuredData | null>(null)
     const [draftResume, setDraftResume] = useState<ResumeStructuredData | null>(null)
     const [appliedFixes, setAppliedFixes] = useState<Set<string>>(new Set())
+    const [savedTailoredResumeId, setSavedTailoredResumeId] = useState<string | null>(null)
+    const [isDraftDirty, setIsDraftDirty] = useState(false)
+    const [isSavingTailoredResume, setIsSavingTailoredResume] = useState(false)
+    const [tailoredResumeSaveError, setTailoredResumeSaveError] = useState<string | null>(null)
     const [jobDescriptionParsingResult, setJobDescriptionParsingResult] = useState<{
         companyName: string
         roleTitle: string
@@ -69,6 +73,9 @@ export default function Page() {
         setSelectedResumeStructuredData(null)
         setDraftResume(null)
         setAppliedFixes(new Set())
+        setSavedTailoredResumeId(null)
+        setIsDraftDirty(false)
+        setTailoredResumeSaveError(null)
         setresumeAnalysisResult(null)
         setAiSuggestions(null)
         setTargetSuggestion(null)
@@ -82,6 +89,121 @@ export default function Page() {
 
             return typeof action === "function" ? action(previous) : action
         })
+        setIsDraftDirty(true)
+        setTailoredResumeSaveError(null)
+    }
+
+    const buildTailoredResumeLabel = () => {
+        const role = roleTitle.trim()
+        const company = companyName.trim()
+
+        if (role && company) {
+            return `${role} - ${company} tailored resume`
+        }
+
+        if (role) {
+            return `${role} tailored resume`
+        }
+
+        if (company) {
+            return `${company} tailored resume`
+        }
+
+        const parentResume = resumes.find((resume) => resume.id === selectedResumeId)
+        return `${parentResume?.label ?? "Resume"} - tailored`
+    }
+
+    const buildTailoredResumeNotes = () => {
+        const details = [companyName.trim(), roleTitle.trim()].filter(Boolean).join(" - ")
+        return details ? `Tailored for ${details}` : "Tailored from application editor"
+    }
+
+    const ensureTailoredResumeSaved = async () => {
+        if (!draftResume) {
+            throw new Error("No draft resume to save")
+        }
+
+        if (!selectedResumeId) {
+            throw new Error("No parent resume selected")
+        }
+
+        if (savedTailoredResumeId && !isDraftDirty) {
+            return savedTailoredResumeId
+        }
+
+        setIsSavingTailoredResume(true)
+        setTailoredResumeSaveError(null)
+
+        try {
+            const payload = {
+                label: buildTailoredResumeLabel(),
+                notes: buildTailoredResumeNotes(),
+                structuredData: draftResume,
+            }
+
+            if (savedTailoredResumeId) {
+                const response = await fetch(`/api/resumes/${savedTailoredResumeId}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                })
+
+                if (!response.ok) {
+                    throw new Error("Failed to update tailored resume")
+                }
+
+                const savedResume = await response.json() as ResumeVersion
+                setSavedTailoredResumeId(savedResume.id)
+                setIsDraftDirty(false)
+                return savedResume.id
+            }
+
+            const response = await fetch("/api/resumes/tailored", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    parentResumeId: selectedResumeId,
+                    ...payload,
+                }),
+            })
+
+            if (!response.ok) {
+                throw new Error("Failed to create tailored resume")
+            }
+
+            const savedResume = await response.json() as ResumeVersion
+            setSavedTailoredResumeId(savedResume.id)
+            setIsDraftDirty(false)
+            return savedResume.id
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Failed to save tailored resume"
+            setTailoredResumeSaveError(message)
+            throw error
+        } finally {
+            setIsSavingTailoredResume(false)
+        }
+    }
+
+    const handleSaveTailoredResume = async () => {
+        try {
+            const tailoredResumeId = await ensureTailoredResumeSaved()
+            console.log("Tailored resume saved:", tailoredResumeId)
+        } catch (error) {
+            console.error("Error saving tailored resume:", error)
+        }
+    }
+
+    const handleSubmitApplication = async () => {
+        try {
+            const finalResumeId = await ensureTailoredResumeSaved()
+            console.log("Layer 2 submit placeholder final resume ID:", finalResumeId)
+        } catch (error) {
+            console.error("Error preparing application submit:", error)
+        }
     }
 
 
@@ -91,6 +213,9 @@ export default function Page() {
         setSelectedResumeStructuredData(null)
         setDraftResume(null)
         setAppliedFixes(new Set())
+        setSavedTailoredResumeId(null)
+        setIsDraftDirty(false)
+        setTailoredResumeSaveError(null)
         setAiSuggestions(null)
         setTargetSuggestion(null)
 
@@ -197,6 +322,12 @@ export default function Page() {
                 onResumeChange={handleDraftResumeChange}
                 appliedFixes={appliedFixes}
                 onAppliedFixesChange={setAppliedFixes}
+                onSaveTailoredResume={handleSaveTailoredResume}
+                onSubmitApplication={handleSubmitApplication}
+                isSavingTailoredResume={isSavingTailoredResume}
+                isDraftDirty={isDraftDirty}
+                savedTailoredResumeId={savedTailoredResumeId}
+                tailoredResumeSaveError={tailoredResumeSaveError}
                 aiSuggestions={aiSuggestions}
                 matchScore={resumeAnalysisResult.matchScore}
                 strengthCount={resumeAnalysisResult.strengthCount}
