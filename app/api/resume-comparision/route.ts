@@ -2,7 +2,11 @@ import { anthropicClient } from "@/lib/anthropic";
 import { prisma } from "@/lib/prisma"
 import { NextResponse } from "next/server";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { ResumeAnalysisSchema, type ResumeAnalysis } from "@/lib/schemas/resume-analysis";
+import {
+    ResumeAnalysisSchema,
+    ResumeAnalysisSchemaLenient,
+    type ResumeAnalysisLenient,
+} from "@/lib/schemas/resume-analysis";
 import { ResumeStructuredDataSchema } from "@/lib/schemas/resume-structured-data";
 import { RESUME_ANALYSIS_DEMO } from "@/lib/demo/resume-analysis-demo";
 import { appendFile, mkdir } from "node:fs/promises";
@@ -152,7 +156,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Claude returned invalid JSON resume analysis" }, { status: 500 })
         }
 
-        const validationResult = ResumeAnalysisSchema.safeParse(parsedJson);
+        const validationResult = ResumeAnalysisSchemaLenient.safeParse(parsedJson);
 
         if (!validationResult.success) {
             await appendClaudeAnalysisLog({
@@ -166,7 +170,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Claude returned invalid resume analysis shape" }, { status: 500 })
         }
 
-        const resumeAnalysis: ResumeAnalysis = validationResult.data;
+        const resumeAnalysis: ResumeAnalysisLenient = validationResult.data;
 
         return NextResponse.json({
             ...resumeAnalysis,
