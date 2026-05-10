@@ -41,6 +41,9 @@ type ResumeAnalysisProps = {
     matchScore: number
     strengthCount: number
     aiSuggestions: AiSuggestion[]
+    onSubmitApplication: () => Promise<void>
+    isSubmittingApplication: boolean
+    applicationSubmitError: string | null
     onFixNow: (suggestion: AiSuggestion) => void
 }
 
@@ -262,6 +265,9 @@ const ResumeAnalysisResult = ({
     matchScore,
     strengthCount,
     aiSuggestions,
+    onSubmitApplication,
+    isSubmittingApplication,
+    applicationSubmitError,
     onFixNow,
 }: ResumeAnalysisProps) => {
     const {
@@ -324,7 +330,20 @@ const ResumeAnalysisResult = ({
                         <Button asChild type="button" variant="secondary">
                             <Link href="/resume-editor">Editor</Link>
                         </Button>
-                        <Button type="button">Submit Application</Button>
+                        <div className="flex flex-col items-end gap-1">
+                            <Button
+                                type="button"
+                                disabled={isSubmittingApplication}
+                                onClick={onSubmitApplication}
+                            >
+                                {isSubmittingApplication ? "Submitting..." : "Submit Application"}
+                            </Button>
+                            {applicationSubmitError ? (
+                                <p className="max-w-64 text-right text-xs text-red-300">
+                                    {applicationSubmitError}
+                                </p>
+                            ) : null}
+                        </div>
                     </div>
                 </div>
             </header>

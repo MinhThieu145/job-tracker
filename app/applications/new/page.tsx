@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type SetStateAction } from "react";
+import { useRouter } from "next/navigation";
 import type { ResumeVersion } from "@/generated/prisma/client";
 import type { ResumeAnalysis } from "@/lib/schemas/resume-analysis";
 import type { AiSuggestion, SuggestionsResponse } from "@/lib/schemas/resume-suggestions";
@@ -17,6 +18,7 @@ type ResumeAnalysisResponse = ResumeAnalysis & {
 }
 
 export default function Page() {
+    const router = useRouter()
 
     const [isParsing, setIsParsing] = useState(false); // State to indicate if parsing is in progress
 
@@ -40,7 +42,9 @@ export default function Page() {
     const [savedTailoredResumeId, setSavedTailoredResumeId] = useState<string | null>(null)
     const [isDraftDirty, setIsDraftDirty] = useState(false)
     const [isSavingTailoredResume, setIsSavingTailoredResume] = useState(false)
+    const [isSubmittingApplication, setIsSubmittingApplication] = useState(false)
     const [tailoredResumeSaveError, setTailoredResumeSaveError] = useState<string | null>(null)
+    const [applicationSubmitError, setApplicationSubmitError] = useState<string | null>(null)
     const [jobDescriptionParsingResult, setJobDescriptionParsingResult] = useState<{
         companyName: string
         roleTitle: string
@@ -76,6 +80,7 @@ export default function Page() {
         setSavedTailoredResumeId(null)
         setIsDraftDirty(false)
         setTailoredResumeSaveError(null)
+        setApplicationSubmitError(null)
         setresumeAnalysisResult(null)
         setAiSuggestions(null)
         setTargetSuggestion(null)
@@ -198,11 +203,74 @@ export default function Page() {
     }
 
     const handleSubmitApplication = async () => {
+        setIsSubmittingApplication(true)
+        setApplicationSubmitError(null)
+        setTailoredResumeSaveError(null)
+
         try {
+            if (!resumeAnalysisResult) {
+                throw new Error("No resume analysis to submit")
+            }
+
+            if (!aiSuggestions) {
+                throw new Error("No resume suggestions to submit")
+            }
+
+            const submitCompanyName = jobDescriptionParsingResult?.companyName || companyName
+            const submitRoleTitle = jobDescriptionParsingResult?.roleTitle || roleTitle
+
+            if (!submitCompanyName.trim()) {
+                throw new Error("Missing company name")
+            }
+
+            if (!submitRoleTitle.trim()) {
+                throw new Error("Missing role title")
+            }
+
+            if (!jdText.trim()) {
+                throw new Error("Missing job description")
+            }
+
             const finalResumeId = await ensureTailoredResumeSaved()
-            console.log("Layer 2 submit placeholder final resume ID:", finalResumeId)
+            const response = await fetch("/api/applications", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    companyName: submitCompanyName,
+                    roleTitle: submitRoleTitle,
+                    resumeId: finalResumeId,
+                    jobDescription: jdText,
+                    emailUsed,
+                    analysisResult: resumeAnalysisResult,
+                    aiSuggestions,
+                }),
+            })
+
+            if (!response.ok) {
+                let errorMessage = "Failed to submit application"
+
+                try {
+                    const errorPayload = await response.json()
+                    if (typeof errorPayload.error === "string") {
+                        errorMessage = errorPayload.error
+                    }
+                } catch {
+                    // Keep the generic message when the response body is not JSON.
+                }
+
+                throw new Error(errorMessage)
+            }
+
+            router.push("/")
         } catch (error) {
-            console.error("Error preparing application submit:", error)
+            const message = error instanceof Error ? error.message : "Failed to submit application"
+            setApplicationSubmitError(message)
+            setTailoredResumeSaveError(message)
+            console.error("Error submitting application:", error)
+        } finally {
+            setIsSubmittingApplication(false)
         }
     }
 
@@ -216,6 +284,7 @@ export default function Page() {
         setSavedTailoredResumeId(null)
         setIsDraftDirty(false)
         setTailoredResumeSaveError(null)
+        setApplicationSubmitError(null)
         setAiSuggestions(null)
         setTargetSuggestion(null)
 
@@ -325,6 +394,7 @@ export default function Page() {
                 onSaveTailoredResume={handleSaveTailoredResume}
                 onSubmitApplication={handleSubmitApplication}
                 isSavingTailoredResume={isSavingTailoredResume}
+                isSubmittingApplication={isSubmittingApplication}
                 isDraftDirty={isDraftDirty}
                 savedTailoredResumeId={savedTailoredResumeId}
                 tailoredResumeSaveError={tailoredResumeSaveError}
@@ -350,6 +420,9 @@ export default function Page() {
                     matchScore={resumeAnalysisResult.matchScore}
                     strengthCount={resumeAnalysisResult.strengthCount}
                     aiSuggestions={aiSuggestions}
+                    onSubmitApplication={handleSubmitApplication}
+                    isSubmittingApplication={isSubmittingApplication}
+                    applicationSubmitError={applicationSubmitError}
                     onFixNow={(suggestion) => {
                         setTargetSuggestion(suggestion)
                         setView('editor')

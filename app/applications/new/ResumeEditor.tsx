@@ -22,6 +22,7 @@ type ResumeEditorProps = {
   onSaveTailoredResume: () => Promise<void>
   onSubmitApplication: () => Promise<void>
   isSavingTailoredResume: boolean
+  isSubmittingApplication: boolean
   isDraftDirty: boolean
   savedTailoredResumeId: string | null
   tailoredResumeSaveError: string | null
@@ -170,6 +171,7 @@ function ResumeEditorHeader({
   onExport,
   onSubmit,
   isSavingTailoredResume,
+  isSubmittingApplication,
   isDraftDirty,
   savedTailoredResumeId,
   tailoredResumeSaveError,
@@ -186,6 +188,7 @@ function ResumeEditorHeader({
   onExport: () => void
   onSubmit: () => void
   isSavingTailoredResume: boolean
+  isSubmittingApplication: boolean
   isDraftDirty: boolean
   savedTailoredResumeId: string | null
   tailoredResumeSaveError: string | null
@@ -195,6 +198,7 @@ function ResumeEditorHeader({
     : savedTailoredResumeId && !isDraftDirty
       ? 'Tailored Resume Saved'
       : 'Save Tailored Resume'
+  const submitLabel = isSubmittingApplication ? 'Submitting...' : 'Submit Application'
 
   return (
     <header className="app-header no-print">
@@ -222,10 +226,10 @@ function ResumeEditorHeader({
             type="button"
             className="header-button primary-action"
             data-complete={allComplete}
-            disabled={isSavingTailoredResume}
+            disabled={isSavingTailoredResume || isSubmittingApplication}
             onClick={onSubmit}
           >
-            Submit Application
+            {submitLabel}
           </button>
         </div>
       </div>
@@ -599,6 +603,7 @@ export default function ResumeEditor({
   onSaveTailoredResume,
   onSubmitApplication,
   isSavingTailoredResume,
+  isSubmittingApplication,
   isDraftDirty,
   savedTailoredResumeId,
   tailoredResumeSaveError,
@@ -1534,6 +1539,7 @@ export default function ResumeEditor({
           onExport={handleExport}
           onSubmit={onSubmitApplication}
           isSavingTailoredResume={isSavingTailoredResume}
+          isSubmittingApplication={isSubmittingApplication}
           isDraftDirty={isDraftDirty}
           savedTailoredResumeId={savedTailoredResumeId}
           tailoredResumeSaveError={tailoredResumeSaveError}
