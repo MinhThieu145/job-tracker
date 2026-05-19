@@ -11,16 +11,16 @@ import type {
   BulletSignal,
   BulletSignalKey,
   MissingKeywordAction,
-  PublicQuickScanDemoResult,
+  PublicQuickScanResult,
   ResponsibilityStatus,
   SearchabilityCheck,
   SearchabilityStatus,
-} from "@/lib/demo/public-quick-scan-demo"
+} from "@/lib/schemas/public-quick-scan"
 import type { ResumeStructuredData } from "@/lib/schemas/resume-structured-data"
 
 type QuickScanResultsProps = {
   scanSource: ScanSource
-  result: PublicQuickScanDemoResult
+  result: PublicQuickScanResult
   resume: ResumeStructuredData
   bulletSignals: Record<BulletSignalKey, BulletSignal>
   onNewScan: () => void

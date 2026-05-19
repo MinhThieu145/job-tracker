@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import type { BulletSignal, BulletSignalKey } from "@/lib/demo/public-quick-scan-demo"
+import type { BulletSignal, BulletSignalKey } from "@/lib/schemas/public-quick-scan"
 import type { ResumeStructuredData } from "@/lib/schemas/resume-structured-data"
 
 type ResumePanelProps = {

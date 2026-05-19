@@ -1,64 +1,25 @@
 import type { ResumeStructuredData } from "@/lib/schemas/resume-structured-data"
+import type {
+  BulletSignal,
+  BulletSignalKey,
+  PublicQuickScanResult,
+} from "@/lib/schemas/public-quick-scan"
 
-export type BulletSignal = "good" | "partial" | "weak"
-export type BulletSignalKey = `${string}:${number}`
-
-export type QuickScanScoreLabel = "Below target" | "Getting there" | "Strong match"
-
-export type QuickScanMetric = {
-  found: number
-  total: number
-}
-
-export type MissingKeywordAction = "add_to_skills" | "strengthen" | "real_gap"
-
-export type MissingKeyword = {
-  label: string
-  action: MissingKeywordAction
-  jdFreq: number
-  reason: string
-}
-
-export type WeakKeyword = {
-  label: string
-  note: string
-}
-
-export type ResponsibilityStatus = "demonstrated" | "partial" | "not_shown"
-
-export type ResponsibilityMatch = {
-  label: string
-  status: ResponsibilityStatus
-  evidence: string | null
-  gap: string | null
-  targetBulletKey?: BulletSignalKey
-}
-
-export type SearchabilityStatus = "pass" | "warn" | "fail"
-
-export type SearchabilityCheck = {
-  category: "Contact information" | "Section headings" | "Experience format" | "Date consistency"
-  status: SearchabilityStatus
-  text: string
-}
-
-export type PublicQuickScanDemoResult = {
-  score: number
-  scoreLabel: QuickScanScoreLabel
-  verdict: string
-  strongestSignal: string
-  biggestGap: string
-  metrics: {
-    hardSkills: QuickScanMetric
-    domainTerms: QuickScanMetric
-    softSkills: QuickScanMetric
-  }
-  missing: MissingKeyword[]
-  weak: WeakKeyword[]
-  present: string[]
-  responsibilities: ResponsibilityMatch[]
-  searchability: SearchabilityCheck[]
-}
+export type {
+  BulletSignal,
+  BulletSignalKey,
+  MissingKeyword,
+  MissingKeywordAction,
+  PublicQuickScanPayload,
+  PublicQuickScanResult,
+  QuickScanMetric,
+  QuickScanScoreLabel,
+  ResponsibilityMatch,
+  ResponsibilityStatus,
+  SearchabilityCheck,
+  SearchabilityStatus,
+  WeakKeyword,
+} from "@/lib/schemas/public-quick-scan"
 
 // Demo-only fixture for the public scan/results flow.
 // Keep this separate from lib/resume-demo-data.ts because the old file supports
@@ -170,7 +131,7 @@ export const DEMO_BULLET_SIGNALS: Record<BulletSignalKey, BulletSignal> = {
   "medkick:2": "partial",
 }
 
-export const DEMO_QUICK_SCAN_RESULT: PublicQuickScanDemoResult = {
+export const DEMO_QUICK_SCAN_RESULT: PublicQuickScanResult = {
   score: 62,
   scoreLabel: "Below target",
   verdict:

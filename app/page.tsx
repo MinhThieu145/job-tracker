@@ -15,6 +15,9 @@ import {
   DEMO_QUICK_SCAN_RESULT,
   DEMO_RESUME_STRUCTURED_DATA,
 } from "@/lib/demo/public-quick-scan-demo"
+import { parseResumeFile } from "@/lib/resume-file-parser"
+import type { PublicQuickScanPayload } from "@/lib/schemas/public-quick-scan"
+import type { ResumeStructuredData } from "@/lib/schemas/resume-structured-data"
 
 export default function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null)
