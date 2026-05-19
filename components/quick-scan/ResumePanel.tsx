@@ -24,7 +24,7 @@ export function ResumePanel({
   highlightedBulletKey,
 }: ResumePanelProps) {
   return (
-    <aside className="border-t border-border bg-card lg:sticky lg:top-[52px] lg:h-[calc(100vh-52px)] lg:w-[340px] lg:shrink-0 lg:overflow-y-auto lg:border-l lg:border-t-0">
+    <aside className="border-t border-border bg-card lg:sticky lg:top-14 lg:h-[calc(100vh-56px)] lg:w-[340px] lg:shrink-0 lg:overflow-y-auto lg:border-l lg:border-t-0">
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-card px-[18px] py-4">
         <div className="text-[9px] font-bold uppercase tracking-[0.1em] text-muted-copy">
           Your resume
