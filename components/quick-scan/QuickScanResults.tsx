@@ -64,7 +64,6 @@ export function QuickScanResults({
   const [activeSection, setActiveSection] = useState<SectionId>("summary")
   const [searchOpen, setSearchOpen] = useState(true)
   const [highlightedBulletKey, setHighlightedBulletKey] = useState<BulletSignalKey | null>(null)
-  const [conversionMessage, setConversionMessage] = useState<string | null>(null)
   const summaryRef = useRef<HTMLDivElement | null>(null)
   const searchabilityRef = useRef<HTMLDivElement | null>(null)
   const keywordsRef = useRef<HTMLDivElement | null>(null)
@@ -109,13 +108,9 @@ export function QuickScanResults({
     }, 80)
   }
 
-  const showConversionMessage = () => {
-    setConversionMessage("Account creation and saved fixes are coming next. This preview is demo-only for now.")
-  }
-
   return (
-    <section className="min-h-[calc(100vh-52px)] bg-background lg:flex">
-      <aside className="border-b border-border bg-card p-4 lg:sticky lg:top-[52px] lg:h-[calc(100vh-52px)] lg:w-[210px] lg:shrink-0 lg:overflow-y-auto lg:border-b-0 lg:border-r lg:px-4 lg:py-[22px]">
+    <section className="min-h-[calc(100vh-56px)] bg-background lg:flex">
+      <aside className="border-b border-border bg-card p-4 lg:sticky lg:top-14 lg:h-[calc(100vh-56px)] lg:w-[210px] lg:shrink-0 lg:overflow-y-auto lg:border-b-0 lg:border-r lg:px-4 lg:py-[22px]">
         <div className="flex justify-center">
           <ScoreArc score={result.score} />
         </div>
@@ -175,13 +170,6 @@ export function QuickScanResults({
 
         <button
           type="button"
-          onClick={showConversionMessage}
-          className="mb-2 w-full rounded-lg bg-primary px-3.5 py-2.5 text-[12px] font-medium text-primary-foreground transition-colors hover:bg-[#2D2420]"
-        >
-          See all 6 fixes -&gt;
-        </button>
-        <button
-          type="button"
           onClick={onNewScan}
           className="w-full rounded-lg border border-border-mid bg-transparent px-3.5 py-2 text-[12px] text-muted-copy transition-colors hover:bg-surface"
         >
@@ -189,17 +177,12 @@ export function QuickScanResults({
         </button>
       </aside>
 
-      <main className="min-w-0 flex-1 px-4 py-5 sm:px-7 lg:max-h-[calc(100vh-52px)] lg:overflow-y-auto">
-        {scanSource === "uploaded" ? (
+      <main className="min-w-0 flex-1 px-4 py-5 sm:px-7 lg:max-h-[calc(100vh-56px)] lg:overflow-y-auto">
+        {scanSource === "demo" ? (
           <div className="mb-3 rounded-lg border border-accent-rim bg-accent-bg px-4 py-3 text-[12px] leading-relaxed text-secondary-copy">
-            <span className="font-semibold text-accent">Demo preview:</span> this view is using
-            Nathan&apos;s sample data while the real quick-scan API is still being built.
-          </div>
-        ) : null}
-
-        {conversionMessage ? (
-          <div className="mb-3 rounded-lg border border-border bg-card px-4 py-3 text-[12px] text-secondary-copy">
-            {conversionMessage}
+            <span className="font-semibold text-accent">Sample preview:</span>{" "}
+            this view uses
+            Nathan&apos;s sample resume and a sample data science internship.
           </div>
         ) : null}
 
@@ -227,11 +210,11 @@ export function QuickScanResults({
             <div className="text-[13px] font-semibold text-foreground">Searchability</div>
             <div className="flex items-center gap-2.5 text-[11px] text-muted-copy">
               <span className="font-semibold text-ok">{searchabilityCounts.pass} pass</span>
-              <span>·</span>
+              <span>-</span>
               <span className="font-semibold text-warn">{searchabilityCounts.warn} warn</span>
               {searchabilityCounts.fail > 0 ? (
                 <>
-                  <span>·</span>
+                  <span>-</span>
                   <span className="font-semibold text-err">{searchabilityCounts.fail} fail</span>
                 </>
               ) : null}
@@ -427,23 +410,6 @@ export function QuickScanResults({
           </div>
         </AnalysisCard>
 
-        <section className="rounded-[14px] border border-accent-rim bg-accent-bg px-7 py-7 text-center">
-          <h2 className="mb-2 font-serif text-[22px] font-normal tracking-normal text-foreground">
-            6 targeted fixes are ready.
-          </h2>
-          <p className="mx-auto mb-5 max-w-[360px] text-[13px] leading-[1.65] text-secondary-copy">
-            Create a free account to see exactly which bullets to rewrite - only changes you can
-            honestly defend in an interview.
-          </p>
-          <button
-            type="button"
-            onClick={showConversionMessage}
-            className="rounded-lg bg-primary px-7 py-3 text-[13px] font-medium text-primary-foreground transition-colors hover:bg-[#2D2420]"
-          >
-            See all 6 fixes - free -&gt;
-          </button>
-          <div className="mt-2.5 text-[11px] text-muted-copy">No credit card - 30 seconds to set up</div>
-        </section>
       </main>
 
       <ResumePanel
