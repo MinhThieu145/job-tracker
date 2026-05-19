@@ -10,37 +10,43 @@ export function QuickScanNav({ view, onReset, onTryFree }: QuickScanNavProps) {
   const isLanding = view === "landing"
 
   return (
-    <nav className="sticky top-0 z-50 flex h-[52px] items-center justify-between border-b border-border bg-[#fffcf8]/95 px-5 backdrop-blur-[10px] sm:px-7">
-      <button
-        type="button"
-        onClick={onReset}
-        aria-label="Reset scan flow"
-        className="font-serif text-[18px] leading-none text-foreground"
-      >
-        ResumeScore
-      </button>
-
-      <div className="flex items-center gap-4 sm:gap-5">
-        <a
-          href="#how-it-works"
-          className="hidden text-[13px] font-medium text-muted-copy transition-colors hover:text-foreground sm:inline"
-        >
-          How it works
-        </a>
-        <a
-          href="#pricing"
-          className="hidden text-[13px] font-medium text-muted-copy transition-colors hover:text-foreground sm:inline"
-        >
-          Pricing
-        </a>
+    <header className="sticky top-0 z-50 h-14 border-b border-border bg-background/95 backdrop-blur-[14px]">
+      <div className="mx-auto flex h-full w-full max-w-[354px] min-w-0 items-center justify-between gap-4 px-0 sm:max-w-[1160px] sm:px-8">
         <button
           type="button"
-          onClick={isLanding ? onTryFree : onReset}
-          className="rounded-[7px] bg-primary px-4 py-[7px] text-[13px] font-medium leading-none text-primary-foreground transition-colors hover:bg-[#2D2420]"
+          onClick={onReset}
+          aria-label="Reset scan flow"
+          className="font-serif text-[20px] leading-none tracking-normal text-foreground"
         >
-          {isLanding ? "Try free" : "New scan ->"}
+          ResumeScore
         </button>
+
+        <div className="flex items-center gap-4 sm:gap-6">
+          {isLanding ? (
+            <nav className="hidden items-center gap-6 sm:flex" aria-label="Landing sections">
+              <a
+                href="#how-it-works"
+                className="text-[13px] text-muted-copy transition-colors hover:text-foreground"
+              >
+                How it works
+              </a>
+              <a
+                href="#why-trust"
+                className="text-[13px] text-muted-copy transition-colors hover:text-foreground"
+              >
+                Why trust it
+              </a>
+            </nav>
+          ) : null}
+          <button
+            type="button"
+            onClick={isLanding ? onTryFree : onReset}
+            className="rounded-lg bg-primary px-4 py-2 text-[13px] font-semibold leading-none text-primary-foreground transition-colors hover:bg-[#2D2420]"
+          >
+            {isLanding ? "Try free" : "New scan ->"}
+          </button>
+        </div>
       </div>
-    </nav>
+    </header>
   )
 }
