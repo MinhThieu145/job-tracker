@@ -1,6 +1,12 @@
 "use client"
 
-import { type ChangeEvent, type DragEvent, useCallback, useRef, useState } from "react"
+import {
+  type ChangeEvent,
+  type DragEvent,
+  useCallback,
+  useRef,
+  useState,
+} from "react"
 import { PublicScanLanding } from "@/components/quick-scan/PublicScanLanding"
 import { QuickScanNav } from "@/components/quick-scan/QuickScanNav"
 import { QuickScanResults } from "@/components/quick-scan/QuickScanResults"
@@ -27,6 +33,11 @@ export default function Home() {
   const [jobDescription, setJobDescription] = useState("")
   const [isDragging, setIsDragging] = useState(false)
   const [message, setMessage] = useState<LandingMessage | null>(null)
+  const [scanPayload, setScanPayload] = useState<PublicQuickScanPayload | null>(null)
+  const [scanResume, setScanResume] = useState<ResumeStructuredData | null>(null)
+  const scanPayloadRef = useRef<PublicQuickScanPayload | null>(null)
+  const scanResumeRef = useRef<ResumeStructuredData | null>(null)
+  const scanAnimationDoneRef = useRef(false)
 
   const openFilePicker = () => {
     fileInputRef.current?.click()
@@ -39,6 +50,11 @@ export default function Home() {
     setJobDescription("")
     setIsDragging(false)
     setMessage(null)
+    setScanPayload(null)
+    setScanResume(null)
+    scanPayloadRef.current = null
+    scanResumeRef.current = null
+    scanAnimationDoneRef.current = false
   }, [])
 
   const validateAndSetFile = (file: File | null) => {
@@ -84,10 +100,15 @@ export default function Home() {
     setScanSource(source)
     setMessage(null)
     setIsDragging(false)
+    setScanPayload(null)
+    setScanResume(null)
+    scanPayloadRef.current = null
+    scanResumeRef.current = null
+    scanAnimationDoneRef.current = false
     setView("scanning")
   }
 
-  const handleScan = () => {
+  const handleScan = async () => {
     if (!selectedFile) {
       setMessage({
         tone: "error",
@@ -96,15 +117,85 @@ export default function Home() {
       return
     }
 
+    const trimmedJobDescription = jobDescription.trim()
+
+    if (!trimmedJobDescription) {
+      setMessage({
+        tone: "error",
+        text: "Paste the job description first so the scan can score this specific role.",
+      })
+      return
+    }
+
     startScan("uploaded")
+
+    try {
+      const resume = await parseResumeFile(selectedFile)
+      const response = await fetch("/api/public-quick-scan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          resume,
+          jobDescription: trimmedJobDescription,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => null)
+        throw new Error(errorBody?.error ?? "Failed to analyze this resume")
+      }
+
+      const payload = (await response.json()) as PublicQuickScanPayload
+      scanResumeRef.current = resume
+      scanPayloadRef.current = payload
+      setScanResume(resume)
+      setScanPayload(payload)
+
+      if (scanAnimationDoneRef.current) {
+        setView("results")
+      }
+    } catch (error) {
+      setView("landing")
+      setScanSource(null)
+      setScanPayload(null)
+      setScanResume(null)
+      scanPayloadRef.current = null
+      scanResumeRef.current = null
+      scanAnimationDoneRef.current = false
+      setMessage({
+        tone: "error",
+        text:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong while scanning your resume.",
+      })
+    }
   }
 
   const handleTryDemo = () => {
     startScan("demo")
+    const demoPayload: PublicQuickScanPayload = {
+      result: DEMO_QUICK_SCAN_RESULT,
+      bulletSignals: DEMO_BULLET_SIGNALS,
+    }
+    scanResumeRef.current = DEMO_RESUME_STRUCTURED_DATA
+    scanPayloadRef.current = demoPayload
+    setScanResume(DEMO_RESUME_STRUCTURED_DATA)
+    setScanPayload(demoPayload)
+
+    if (scanAnimationDoneRef.current) {
+      setView("results")
+    }
   }
 
   const handleScanningComplete = useCallback(() => {
-    setView("results")
+    scanAnimationDoneRef.current = true
+
+    if (scanPayloadRef.current && scanResumeRef.current) {
+      setView("results")
+    }
   }, [])
 
   return (
@@ -131,12 +222,12 @@ export default function Home() {
 
       {view === "scanning" ? <ScanningScreen onComplete={handleScanningComplete} /> : null}
 
-      {view === "results" && scanSource ? (
+      {view === "results" && scanSource && scanPayload && scanResume ? (
         <QuickScanResults
           scanSource={scanSource}
-          result={DEMO_QUICK_SCAN_RESULT}
-          resume={DEMO_RESUME_STRUCTURED_DATA}
-          bulletSignals={DEMO_BULLET_SIGNALS}
+          result={scanPayload.result}
+          resume={scanResume}
+          bulletSignals={scanPayload.bulletSignals}
           onNewScan={resetScan}
         />
       ) : null}
