@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { Check } from "lucide-react"
 
 const scanningSteps = [
   "Parsing resume structure...",
@@ -28,7 +29,7 @@ export function ScanningScreen({ onComplete }: ScanningScreenProps) {
   }, [onComplete])
 
   return (
-    <section className="flex min-h-[calc(100vh-52px)] items-center justify-center bg-background px-6 py-16">
+    <section className="flex min-h-[calc(100vh-56px)] items-center justify-center bg-background px-6 py-16">
       <div className="text-center">
         <h1 className="mb-9 font-serif text-[26px] font-normal tracking-normal text-foreground">
           Analyzing your match...
@@ -55,9 +56,7 @@ export function ScanningScreen({ onComplete }: ScanningScreenProps) {
                         : "border-border-mid bg-surface"
                   }`}
                 >
-                  {isComplete ? (
-                    <span className="text-[11px] font-bold text-ok">✓</span>
-                  ) : null}
+                  {isComplete ? <Check size={12} className="text-ok" strokeWidth={3} /> : null}
                   {isActive ? (
                     <span className="size-[7px] animate-pulse rounded-full bg-accent" />
                   ) : null}
